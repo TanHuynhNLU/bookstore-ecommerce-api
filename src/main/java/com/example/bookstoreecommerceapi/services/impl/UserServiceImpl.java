@@ -1,6 +1,7 @@
 package com.example.bookstoreecommerceapi.services.impl;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
+import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.repositories.UserRepository;
 import com.example.bookstoreecommerceapi.services.StorageService;
@@ -21,10 +22,10 @@ public class UserServiceImpl implements UserService {
     private StorageService storageService;
 
     @Override
-    public ResponseObject addNewUser(User newUser) {
+    public ResponseObject addNewUser(User newUser) throws UserAlreadyExistsException {
         Optional<User> userOptional = userRepository.findByUsername(newUser.getUsername());
         if (userOptional.isPresent()) {
-            return new ResponseObject(HttpStatus.CONFLICT, "Tên đăng nhập đã tồn tại", null);
+            throw new UserAlreadyExistsException("Tài khoản đã tồn tại");
         } else {
             userRepository.save(newUser);
             return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", newUser);
