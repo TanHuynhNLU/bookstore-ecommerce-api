@@ -19,9 +19,16 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.badRequest().body(new ResponseObject(HttpStatus.BAD_REQUEST, errorMessages.toString(), null));
     }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ResponseObject> handleUserAlreadyExistsException(UserAlreadyExistsException e){
         ResponseObject responseObject = new ResponseObject(HttpStatus.CONFLICT,e.getMessage(),null);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObject);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ResponseObject> handleUserNotFoundException(UserNotFoundException e){
+        ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND,e.getMessage(),null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
     }
 }

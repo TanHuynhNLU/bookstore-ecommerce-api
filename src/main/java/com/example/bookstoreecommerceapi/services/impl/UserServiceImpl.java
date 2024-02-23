@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.services.impl;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.repositories.UserRepository;
 import com.example.bookstoreecommerceapi.services.StorageService;
@@ -36,5 +37,31 @@ public class UserServiceImpl implements UserService {
     public ResponseObject getAllUsers() {
         List<User> users = userRepository.findAll();
         return new ResponseObject(HttpStatus.OK, "Thành công", users);
+    }
+
+    @Override
+    public ResponseObject getUserById(long id) throws UserNotFoundException {
+        Optional<User> userDB = userRepository.findById(id);
+        if(userDB.isPresent()){
+            return new ResponseObject(HttpStatus.OK,"Thành công",userDB.get());
+        }else{
+            throw new UserNotFoundException("Tài khoản không tồn tại");
+        }
+    }
+
+    @Override
+    public ResponseObject updateUser(long id, User user) throws UserNotFoundException {
+        Optional<User> optionalUserDB = userRepository.findById(id);
+        if(!optionalUserDB.isPresent()) throw new UserNotFoundException("Tài khoản không tồn tại");
+        User userDB = optionalUserDB.get();
+        userDB.setAvatar(user.getAvatar());
+        userDB.setBirthday(user.getBirthday());
+        userDB.setAddress(user.getAddress());
+        userDB.setEmail(user.getEmail());
+        userDB.setGender(user.getGender());
+        userDB.setRole(user.getRole());
+        userDB.setFullName(user.getFullName());
+        userDB.setPhone(user.getPhone());
+        return new ResponseObject(HttpStatus.OK,"Cập nhật tài khoản thành công",userRepository.save(userDB));
     }
 }

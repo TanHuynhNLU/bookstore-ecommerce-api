@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -62,5 +63,12 @@ class UserServiceTest {
         assertNotNull(actualUsers);
         assertEquals(2,actualUsers.size());
     }
-
+    @Test
+    @DisplayName("JUnit test for getUserById method")
+    void whenGetUserById_thenReturnUserObject(){
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        User userActual = userRepository.findById(1L).get();
+        assertNotNull(userActual);
+        assertEquals("tanhuynh123",userActual.getUsername());
+    }
 }

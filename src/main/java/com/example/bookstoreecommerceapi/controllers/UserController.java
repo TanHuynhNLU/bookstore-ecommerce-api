@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.services.UserService;
 import jakarta.validation.Valid;
@@ -23,9 +24,21 @@ public class UserController {
         return ResponseEntity.ok(responseObject);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getUserById(@PathVariable long id) throws UserNotFoundException {
+        ResponseObject responseObject = userService.getUserById(id);
+        return ResponseEntity.ok(responseObject);
+    }
+
     @PostMapping
     public ResponseEntity<ResponseObject> addNewUser(@Valid @RequestBody User newUser) throws UserAlreadyExistsException {
         ResponseObject responseObject = userService.addNewUser(newUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseObject> updateUser(@PathVariable long id,@RequestBody User user) throws UserNotFoundException {
+        ResponseObject responseObject = userService.updateUser( id,user);
+        return ResponseEntity.ok(responseObject);
     }
 }

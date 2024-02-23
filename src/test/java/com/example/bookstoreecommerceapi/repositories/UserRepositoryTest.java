@@ -30,6 +30,13 @@ class UserRepositoryTest {
     @DisplayName("JUnit test for findByUsername method")
     void whenFindByUsername_thenReturnUserObject(){
         User userActual = userRepository.findByUsername("tanhuynh123").get();
+        System.out.println(userActual.getId());
         assertEquals(userActual.getUsername(),"tanhuynh123");
+    }
+    @Test
+    @DisplayName("JUnit test for findById method")
+    void whenFindById_thenReturnUserObject(){
+        User userActual = userRepository.findById(1L).get();
+        assertEquals(userActual.getUsername(),"Tan Huynh");
     }
 }

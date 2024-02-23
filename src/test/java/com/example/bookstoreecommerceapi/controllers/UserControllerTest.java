@@ -4,6 +4,7 @@ import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.services.UserService;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -86,5 +87,28 @@ class UserControllerTest {
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", mockUsers);
         Mockito.when(userService.getAllUsers()).thenReturn(responseObject);
         mockMvc.perform(get("/api/users")).andExpect(status().isOk());
+    }
+
+    @Test
+    void getUserById() throws Exception {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", user);
+        Mockito.when(userService.getUserById(1L)).thenReturn(responseObject);
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.username").value("tanhuynh123"));
+    }
+    @Test
+    void updateUser() throws Exception {
+        User userUpdate = User.builder()
+                .fullName("Tan Huynh")
+                .email("tanhuynh2000@gmail.com").build();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", userUpdate);
+        Mockito.when(userService.updateUser(1L,userUpdate)).thenReturn(responseObject);
+        mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON).content("{\n" +
+                        "\t\"fullName\":\"Tan Huynh\",\n" +
+                        "\t\"email\":\"tanhuynh2000@gmail.com\"\n" +
+                        "}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.fullName").value("Tan Huynh"));
     }
 }
