@@ -64,4 +64,14 @@ public class UserServiceImpl implements UserService {
         userDB.setPhone(user.getPhone());
         return new ResponseObject(HttpStatus.OK,"Cập nhật tài khoản thành công",userRepository.save(userDB));
     }
+
+    @Override
+    public ResponseObject deleteUser(long id) throws UserNotFoundException {
+        boolean isExists = userRepository.existsById(id);
+        if(!isExists){
+            throw new UserNotFoundException("Tài khoản không tồn tại");
+        }
+        userRepository.deleteById(id);
+        return new ResponseObject(HttpStatus.OK,"Xóa tài khoản thành công",null);
+    }
 }

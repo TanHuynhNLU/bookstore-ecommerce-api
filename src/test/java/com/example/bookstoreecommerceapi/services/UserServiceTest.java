@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
@@ -70,5 +70,13 @@ class UserServiceTest {
         User userActual = userRepository.findById(1L).get();
         assertNotNull(userActual);
         assertEquals("tanhuynh123",userActual.getUsername());
+    }
+    @Test
+    @DisplayName("JUnit test for deleteUser method")
+    void whenDeleteUser_thenNothing(){
+        long userId = user.getId();
+        doNothing().when(userRepository).deleteById(userId);
+        userRepository.deleteById(userId);
+        verify(userRepository,times(1)).deleteById(userId);
     }
 }

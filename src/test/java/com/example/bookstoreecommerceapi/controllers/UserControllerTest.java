@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.services.UserService;
 import com.jayway.jsonpath.JsonPath;
@@ -110,5 +111,12 @@ class UserControllerTest {
                         "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.fullName").value("Tan Huynh"));
+    }
+    @Test
+    void deleteUser() throws Exception {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Xóa tài khoản thành công", null);
+        Mockito.when(userService.deleteUser(1L)).thenReturn(responseObject);
+
+        mockMvc.perform(delete("/api/users/1")).andExpect(status().isOk());
     }
 }

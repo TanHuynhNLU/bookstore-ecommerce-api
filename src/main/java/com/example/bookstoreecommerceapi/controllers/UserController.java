@@ -37,8 +37,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateUser(@PathVariable long id,@RequestBody User user) throws UserNotFoundException {
-        ResponseObject responseObject = userService.updateUser( id,user);
+    public ResponseEntity<ResponseObject> updateUser(@PathVariable long id, @RequestBody User user) throws UserNotFoundException {
+        ResponseObject responseObject = userService.updateUser(id, user);
         return ResponseEntity.ok(responseObject);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseObject> deleteUser(@PathVariable long id) throws UserNotFoundException {
+        ResponseObject responseObject = userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 }
