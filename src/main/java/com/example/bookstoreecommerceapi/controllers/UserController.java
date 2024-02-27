@@ -40,6 +40,14 @@ public class UserController {
         return ResponseEntity.ok(paginationResponse);
     }
 
+    @GetMapping("check-username/{username}")
+    public ResponseEntity<ResponseObject> checkUsername(@PathVariable String username) {
+        ResponseObject responseObject = userService.isUsernameExists(username);
+        if (responseObject.getStatus() == HttpStatus.OK)
+            return ResponseEntity.ok(responseObject);
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
+    }
+
     @PostMapping
     public ResponseEntity<ResponseObject> addNewUser(@Valid @RequestBody User newUser) throws UserAlreadyExistsException {
         ResponseObject responseObject = userService.addNewUser(newUser);

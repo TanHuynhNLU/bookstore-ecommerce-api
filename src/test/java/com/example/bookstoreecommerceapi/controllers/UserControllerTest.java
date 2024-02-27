@@ -125,6 +125,14 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalItems").value(3));
     }
+
+    @Test
+    void checkUsername() throws Exception {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Tên đăng nhập đã tồn tại", null);
+        Mockito.when(userService.isUsernameExists("tanhuynh123")).thenReturn(responseObject);
+        mockMvc.perform(get("/api/users/check-username/tanhuynh123"))
+                .andExpect(status().isOk());
+    }
     @Test
     void updateUser() throws Exception {
         User userUpdate = User.builder()

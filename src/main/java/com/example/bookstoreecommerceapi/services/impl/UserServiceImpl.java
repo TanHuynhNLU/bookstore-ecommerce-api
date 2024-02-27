@@ -62,6 +62,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseObject isUsernameExists(String username) {
+        boolean isExists = userRepository.existsByUsername(username);
+        ResponseObject responseObject = new ResponseObject();
+        if (isExists) {
+            responseObject = new ResponseObject(HttpStatus.OK, "Tên đăng nhập đã tồn tại", null);
+        } else {
+            responseObject = new ResponseObject(HttpStatus.NOT_FOUND, "Tên đăng nhập không tồn tại", null);
+        }
+        return responseObject;
+    }
+
+    @Override
     public ResponseObject updateUser(long id, User user) throws UserNotFoundException {
         Optional<User> optionalUserDB = userRepository.findById(id);
         if (!optionalUserDB.isPresent()) throw new UserNotFoundException("Tài khoản không tồn tại");

@@ -78,4 +78,10 @@ class UserRepositoryTest {
         User userActual = userRepository.findById(1L).get();
         assertEquals(userActual.getUsername(), "Tan Huynh");
     }
+    @Test
+    @DisplayName("JUnit test for existsById method")
+    void whenExistByUsername_thenReturnTrue(){
+        boolean isExist = userRepository.existsByUsername("tanhuynh123");
+        assertTrue(isExist);
+    }
 }

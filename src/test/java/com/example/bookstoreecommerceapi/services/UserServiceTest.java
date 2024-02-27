@@ -103,6 +103,14 @@ class UserServiceTest {
         assertNotNull(res);
         assertEquals(3,res.getTotalItems());
     }
+
+    @Test
+    @DisplayName("JUnit test for isUsernameExists method")
+    void whenUserExist_thenReturnHttpStatusOk(){
+        when(userRepository.existsByUsername("tanhuynh123")).thenReturn(true);
+        ResponseObject actualResponseObject = userService.isUsernameExists("tanhuynh123");
+        assertEquals(HttpStatus.OK,actualResponseObject.getStatus());
+    }
     @Test
     @DisplayName("JUnit test for deleteUser method")
     void whenDeleteUser_thenNothing(){
