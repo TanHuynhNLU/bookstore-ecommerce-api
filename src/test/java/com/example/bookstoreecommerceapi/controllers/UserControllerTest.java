@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.controllers;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
@@ -97,6 +98,32 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.username").value("tanhuynh123"));
+    }
+
+    @Test
+    void getAllUsersPaginationAndSorting() throws Exception {
+        User user1 = User.builder()
+                .username("nguyenvana")
+                .password("12345678")
+                .fullName("Nguyen Van A")
+                .email("nguyenvana@gmail.com").build();
+        User user2 = User.builder()
+                .username("nguyenvanb")
+                .password("12345678")
+                .fullName("Nguyen Van B")
+                .email("nguyenvana@gmail.com").build();
+        User user3 = User.builder()
+                .username("nguyenvanb")
+                .password("12345678")
+                .fullName("Nguyen Van B")
+                .email("nguyenvana@gmail.com").build();
+        List<User> users = List.of(user1,user2,user3);
+
+        PaginationResponse paginationResponse = new PaginationResponse(3,users,1,0);
+        Mockito.when(userService.getAllUsersPaginationAndSorting(0,3,"id")).thenReturn(paginationResponse);
+        mockMvc.perform(get("/api/users/pagination?page=0&size=3&sort=id"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalItems").value(3));
     }
     @Test
     void updateUser() throws Exception {

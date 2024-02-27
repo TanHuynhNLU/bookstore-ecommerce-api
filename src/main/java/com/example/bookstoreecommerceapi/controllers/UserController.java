@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.controllers;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
@@ -28,6 +29,15 @@ public class UserController {
     public ResponseEntity<ResponseObject> getUserById(@PathVariable long id) throws UserNotFoundException {
         ResponseObject responseObject = userService.getUserById(id);
         return ResponseEntity.ok(responseObject);
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<PaginationResponse> getAllUsersPaginationAndSorting(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
+        PaginationResponse paginationResponse = userService.getAllUsersPaginationAndSorting(page, size, sort);
+        return ResponseEntity.ok(paginationResponse);
     }
 
     @PostMapping

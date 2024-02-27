@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.services;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.models.User;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -70,6 +72,36 @@ class UserServiceTest {
         User userActual = userRepository.findById(1L).get();
         assertNotNull(userActual);
         assertEquals("tanhuynh123",userActual.getUsername());
+    }
+
+    @Test
+    @DisplayName("Junit test for getAllUsersPaginationAndSorting method")
+    void whenGetAllUsersPaginationAndSorting_thenReturnList(){
+        User user1 = User.builder()
+                .username("nguyenvana")
+                .password("12345678")
+                .fullName("Nguyen Van A")
+                .email("nguyenvana@gmail.com").build();
+        User user2 = User.builder()
+                .username("nguyenvanb")
+                .password("12345678")
+                .fullName("Nguyen Van B")
+                .email("nguyenvana@gmail.com").build();
+        User user3 = User.builder()
+                .username("nguyenvanb")
+                .password("12345678")
+                .fullName("Nguyen Van B")
+                .email("nguyenvana@gmail.com").build();
+        List<User> users = List.of(user1,user2,user3);
+
+        Pageable pageable = PageRequest.of(0,3, Sort.Direction.ASC,"id");
+
+        Page<User> mockedPage = new PageImpl<>(users);
+        when(userRepository.findAll(pageable)).thenReturn(mockedPage);
+
+        PaginationResponse res = userService.getAllUsersPaginationAndSorting(0,3,"id");
+        assertNotNull(res);
+        assertEquals(3,res.getTotalItems());
     }
     @Test
     @DisplayName("JUnit test for deleteUser method")

@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.services;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
@@ -12,6 +13,8 @@ public interface UserService {
     ResponseObject getAllUsers();
 
     ResponseObject getUserById(long id) throws UserNotFoundException;
+
+    PaginationResponse getAllUsersPaginationAndSorting(int page, int size, String sort);
 
     ResponseObject updateUser(long id, User user) throws UserNotFoundException;
 
