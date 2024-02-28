@@ -86,12 +86,12 @@ class UserServiceTest {
                 .username("nguyenvanb")
                 .password("12345678")
                 .fullName("Nguyen Van B")
-                .email("nguyenvana@gmail.com").build();
+                .email("nguyenvanb@gmail.com").build();
         User user3 = User.builder()
-                .username("nguyenvanb")
+                .username("nguyenvanc")
                 .password("12345678")
-                .fullName("Nguyen Van B")
-                .email("nguyenvana@gmail.com").build();
+                .fullName("Nguyen Van C")
+                .email("nguyenvanc@gmail.com").build();
         List<User> users = List.of(user1,user2,user3);
 
         Pageable pageable = PageRequest.of(0,3, Sort.Direction.ASC,"id");
@@ -102,6 +102,36 @@ class UserServiceTest {
         PaginationResponse res = userService.getAllUsersPaginationAndSorting(0,3,"id");
         assertNotNull(res);
         assertEquals(3,res.getTotalItems());
+    }
+
+    @Test
+    @DisplayName("Junit test for getUsersByUsernameContaining method")
+    void whenGetUsersByUsernameContaining_thenReturnListUser(){
+        User user1 = User.builder()
+                .username("nguyenvana")
+                .password("12345678")
+                .fullName("Nguyen Van A")
+                .email("nguyenvana@gmail.com").build();
+        User user2 = User.builder()
+                .username("nguyenvanb")
+                .password("12345678")
+                .fullName("Nguyen Van B")
+                .email("nguyenvanb@gmail.com").build();
+        User user3 = User.builder()
+                .username("nguyenvanc")
+                .password("12345678")
+                .fullName("Nguyen Van C")
+                .email("nguyenvanc@gmail.com").build();
+        List<User> users = List.of(user1,user2,user3);
+
+        Pageable pageable = PageRequest.of(0,10);
+
+        Page<User> mockedPage = new PageImpl<>(users);
+        when(userRepository.findByUsernameContainingIgnoreCase("nguyenvan",pageable)).thenReturn(mockedPage);
+
+        PaginationResponse paginationResponse = userService.getUsersByUsernameContaining("nguyenvan",0,10);
+        assertNotNull(paginationResponse.getItems());
+        assertEquals(3,paginationResponse.getTotalItems());
     }
 
     @Test

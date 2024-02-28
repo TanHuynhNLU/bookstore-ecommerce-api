@@ -59,6 +59,7 @@ class UserControllerTest {
                 ).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.username").value(user.getUsername()));
     }
+
     @Test
     void addNewUserExists() throws Exception {
         User inputUser = User.builder()
@@ -69,13 +70,13 @@ class UserControllerTest {
         Mockito.when(userService.addNewUser(inputUser)).thenThrow(new UserAlreadyExistsException());
 
         mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\n" +
-                                "\t\"username\":\"tanhuynh123\",\n" +
-                                "\t\"password\":\"12345678\",\n" +
-                                "\t\"fullName\":\"Huynh Ngoc Tan\",\n" +
-                                "\t\"email\":\"hntan2000@gmail.com\"\n" +
-                                "}")
-                ).andExpect(status().isConflict());
+                .contentType(MediaType.APPLICATION_JSON).content("{\n" +
+                        "\t\"username\":\"tanhuynh123\",\n" +
+                        "\t\"password\":\"12345678\",\n" +
+                        "\t\"fullName\":\"Huynh Ngoc Tan\",\n" +
+                        "\t\"email\":\"hntan2000@gmail.com\"\n" +
+                        "}")
+        ).andExpect(status().isConflict());
     }
 
     @Test
@@ -113,15 +114,41 @@ class UserControllerTest {
                 .fullName("Nguyen Van B")
                 .email("nguyenvana@gmail.com").build();
         User user3 = User.builder()
+                .username("nguyenvanc")
+                .password("12345678")
+                .fullName("Nguyen Van C")
+                .email("nguyenvanc@gmail.com").build();
+        List<User> users = List.of(user1, user2, user3);
+
+        PaginationResponse paginationResponse = new PaginationResponse(3, users, 1, 0);
+        Mockito.when(userService.getAllUsersPaginationAndSorting(0, 3, "id")).thenReturn(paginationResponse);
+        mockMvc.perform(get("/api/users/pagination?page=0&size=3&sort=id"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalItems").value(3));
+    }
+
+    @Test
+    void getUsersByUsernameContaining() throws Exception {
+        User user1 = User.builder()
+                .username("nguyenvana")
+                .password("12345678")
+                .fullName("Nguyen Van A")
+                .email("nguyenvana@gmail.com").build();
+        User user2 = User.builder()
                 .username("nguyenvanb")
                 .password("12345678")
                 .fullName("Nguyen Van B")
                 .email("nguyenvana@gmail.com").build();
-        List<User> users = List.of(user1,user2,user3);
+        User user3 = User.builder()
+                .username("nguyenvanc")
+                .password("12345678")
+                .fullName("Nguyen Van C")
+                .email("nguyenvanc@gmail.com").build();
+        List<User> users = List.of(user1, user2, user3);
 
-        PaginationResponse paginationResponse = new PaginationResponse(3,users,1,0);
-        Mockito.when(userService.getAllUsersPaginationAndSorting(0,3,"id")).thenReturn(paginationResponse);
-        mockMvc.perform(get("/api/users/pagination?page=0&size=3&sort=id"))
+        PaginationResponse paginationResponse = new PaginationResponse(3, users, 1, 0);
+        Mockito.when(userService.getUsersByUsernameContaining("nguyenvan",0,10)).thenReturn(paginationResponse);
+        mockMvc.perform(get("/api/users/search?username=nguyenvan"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalItems").value(3));
     }
@@ -133,13 +160,14 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/check-username/tanhuynh123"))
                 .andExpect(status().isOk());
     }
+
     @Test
     void updateUser() throws Exception {
         User userUpdate = User.builder()
                 .fullName("Tan Huynh")
                 .email("tanhuynh2000@gmail.com").build();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", userUpdate);
-        Mockito.when(userService.updateUser(1L,userUpdate)).thenReturn(responseObject);
+        Mockito.when(userService.updateUser(1L, userUpdate)).thenReturn(responseObject);
         mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON).content("{\n" +
                         "\t\"fullName\":\"Tan Huynh\",\n" +
                         "\t\"email\":\"tanhuynh2000@gmail.com\"\n" +
@@ -147,6 +175,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.fullName").value("Tan Huynh"));
     }
+
     @Test
     void deleteUser() throws Exception {
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Xóa tài khoản thành công", null);

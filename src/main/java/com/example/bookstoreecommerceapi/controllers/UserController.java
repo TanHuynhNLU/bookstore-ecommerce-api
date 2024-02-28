@@ -40,6 +40,16 @@ public class UserController {
         return ResponseEntity.ok(paginationResponse);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<PaginationResponse> getUsersByUsernameContaining(
+            @RequestParam String username,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+            ){
+        PaginationResponse paginationResponse = userService.getUsersByUsernameContaining(username,page,size);
+        return ResponseEntity.ok(paginationResponse);
+    }
+
     @GetMapping("check-username/{username}")
     public ResponseEntity<ResponseObject> checkUsername(@PathVariable String username) {
         ResponseObject responseObject = userService.isUsernameExists(username);

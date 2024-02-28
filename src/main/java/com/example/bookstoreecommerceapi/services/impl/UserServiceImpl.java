@@ -62,6 +62,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public PaginationResponse getUsersByUsernameContaining(String username, int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<User> userPage = userRepository.findByUsernameContainingIgnoreCase(username,pageable);
+        PaginationResponse paginationResponse = new PaginationResponse(userPage.getTotalElements(),userPage.getContent(),userPage.getTotalPages(),userPage.getNumber());
+        return paginationResponse;
+    }
+
+    @Override
     public ResponseObject isUsernameExists(String username) {
         boolean isExists = userRepository.existsByUsername(username);
         ResponseObject responseObject = new ResponseObject();

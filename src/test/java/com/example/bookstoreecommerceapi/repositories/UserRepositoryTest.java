@@ -58,10 +58,10 @@ class UserRepositoryTest {
                 .fullName("Nguyen Van B")
                 .email("nguyenvana@gmail.com").build();
         User user3 = User.builder()
-                .username("nguyenvanb")
+                .username("nguyenvanc")
                 .password("12345678")
-                .fullName("Nguyen Van B")
-                .email("nguyenvana@gmail.com").build();
+                .fullName("Nguyen Van C")
+                .email("nguyenvanc@gmail.com").build();
         testEntityManager.persist(user1);
         testEntityManager.persist(user2);
         testEntityManager.persist(user3);
@@ -70,6 +70,33 @@ class UserRepositoryTest {
         assertNotNull(pageUser.getContent());
         assertEquals(2, pageUser.getContent().size());
 
+    }
+
+    @Test
+    @DisplayName("JUnit test for findByUsernameContainingIgnoreCase method")
+    void whenFindByUsernameContainingIgnoreCase_thenReturnListUser(){
+        User user1 = User.builder()
+                .username("nguyenvana")
+                .password("12345678")
+                .fullName("Nguyen Van A")
+                .email("nguyenvana@gmail.com").build();
+        User user2 = User.builder()
+                .username("nguyenvanb")
+                .password("12345678")
+                .fullName("Nguyen Van B")
+                .email("nguyenvana@gmail.com").build();
+        User user3 = User.builder()
+                .username("nguyenvanc")
+                .password("12345678")
+                .fullName("Nguyen Van C")
+                .email("nguyenvanc@gmail.com").build();
+        testEntityManager.persist(user1);
+        testEntityManager.persist(user2);
+        testEntityManager.persist(user3);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<User> pageUser = userRepository.findByUsernameContainingIgnoreCase("nguyenvan",pageable);
+        assertNotNull(pageUser.getContent());
+        assertEquals(3, pageUser.getContent().size());
     }
 
     @Test

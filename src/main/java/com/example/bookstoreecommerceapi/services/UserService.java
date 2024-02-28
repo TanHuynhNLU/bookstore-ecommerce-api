@@ -16,6 +16,8 @@ public interface UserService {
 
     PaginationResponse getAllUsersPaginationAndSorting(int page, int size, String sort);
 
+    PaginationResponse getUsersByUsernameContaining(String username, int page, int size);
+
     ResponseObject isUsernameExists(String username);
 
     ResponseObject updateUser(long id, User user) throws UserNotFoundException;
