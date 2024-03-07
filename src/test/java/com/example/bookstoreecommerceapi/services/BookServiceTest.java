@@ -1,6 +1,7 @@
 package com.example.bookstoreecommerceapi.services;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
+import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
 import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.repositories.BookRepository;
 import com.example.bookstoreecommerceapi.services.impl.BookServiceImpl;
@@ -29,7 +30,7 @@ class BookServiceTest {
         book = Book.builder()
                 .name("Nhà giả kim")
                 .author("Paulo Coelho")
-                .price(70000)
+                .price(70_000)
                 .genre("Tiểu thuyết")
                 .build();
     }
@@ -40,7 +41,7 @@ class BookServiceTest {
         Book book1 = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")
                 .author("Luis Sepúlveda")
-                .price(40000)
+                .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
        List<Book> mockBooks = List.of(book,book1);
@@ -49,5 +50,21 @@ class BookServiceTest {
         List<Book> actualBooks = (List<Book>) responseObject.getData();
         assertNotNull(actualBooks);
         assertEquals(2,actualBooks.size());
+    }
+
+    @Test
+    @DisplayName("Junit test for addNewBook method")
+    public void whenAddNewBook_thenReturnBookObject() throws BookAlreadyExistsException {
+        Book book1 = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        when(bookRepository.save(book1)).thenReturn(book1);
+        ResponseObject responseObject = bookService.addNewBook(book1);
+        Book actualBook = (Book) responseObject.getData();
+        assertNotNull(actualBook);
+        assertEquals("Chuyện con mèo dạy hải âu bay",actualBook.getName());
     }
 }

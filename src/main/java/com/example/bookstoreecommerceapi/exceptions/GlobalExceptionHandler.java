@@ -31,4 +31,10 @@ public class GlobalExceptionHandler {
         ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND,e.getMessage(),null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
     }
+
+    @ExceptionHandler(BookAlreadyExistsException.class)
+    public ResponseEntity<ResponseObject> handleBookAlreadyExistsException(BookAlreadyExistsException e){
+        ResponseObject responseObject = new ResponseObject(HttpStatus.CONFLICT,e.getMessage(),null);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObject);
+    }
 }
