@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/FileUpload")
 public class FileUploadController {
     @Autowired
@@ -19,7 +20,7 @@ public class FileUploadController {
     public ResponseEntity<ResponseObject> uploadFile(@RequestParam("file")MultipartFile file){
         try {
             String generatedFileName = storageService.storageFile(file);
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.CREATED).body(
                     new ResponseObject(HttpStatus.CREATED, "Thêm file thành công", generatedFileName)
             );
         } catch (Exception e) {

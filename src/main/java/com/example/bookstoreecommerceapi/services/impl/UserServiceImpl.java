@@ -94,6 +94,7 @@ public class UserServiceImpl implements UserService {
         userDB.setRole(user.getRole());
         userDB.setFullName(user.getFullName());
         userDB.setPhone(user.getPhone());
+        userDB.setStatus(user.getStatus());
         return new ResponseObject(HttpStatus.OK, "Cập nhật tài khoản thành công", userRepository.save(userDB));
     }
 

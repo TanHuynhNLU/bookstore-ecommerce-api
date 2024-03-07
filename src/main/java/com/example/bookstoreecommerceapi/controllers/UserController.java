@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/users")
 public class UserController {
     @Autowired
@@ -55,7 +56,7 @@ public class UserController {
         ResponseObject responseObject = userService.isUsernameExists(username);
         if (responseObject.getStatus() == HttpStatus.OK)
             return ResponseEntity.ok(responseObject);
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
+        else return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
 
     @PostMapping
