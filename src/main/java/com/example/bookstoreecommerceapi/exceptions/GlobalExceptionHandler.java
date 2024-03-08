@@ -1,6 +1,7 @@
 package com.example.bookstoreecommerceapi.exceptions;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
+import com.example.bookstoreecommerceapi.models.Book;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -21,20 +22,26 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ResponseObject> handleUserAlreadyExistsException(UserAlreadyExistsException e){
-        ResponseObject responseObject = new ResponseObject(HttpStatus.CONFLICT,e.getMessage(),null);
+    public ResponseEntity<ResponseObject> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.CONFLICT, e.getMessage(), null);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObject);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ResponseObject> handleUserNotFoundException(UserNotFoundException e){
-        ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND,e.getMessage(),null);
+    public ResponseEntity<ResponseObject> handleUserNotFoundException(UserNotFoundException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND, e.getMessage(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
     }
 
     @ExceptionHandler(BookAlreadyExistsException.class)
-    public ResponseEntity<ResponseObject> handleBookAlreadyExistsException(BookAlreadyExistsException e){
-        ResponseObject responseObject = new ResponseObject(HttpStatus.CONFLICT,e.getMessage(),null);
+    public ResponseEntity<ResponseObject> handleBookAlreadyExistsException(BookAlreadyExistsException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.CONFLICT, e.getMessage(), null);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(responseObject);
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    public ResponseEntity<ResponseObject> handleBookNotFoundException(BookNotFoundException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND, e.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
     }
 }

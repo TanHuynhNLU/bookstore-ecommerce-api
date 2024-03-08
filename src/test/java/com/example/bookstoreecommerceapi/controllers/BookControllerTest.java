@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
 import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.services.BookService;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,5 +93,46 @@ class BookControllerTest {
                                 "    \"genre\":\"Tiểu thuyết\"\n" +
                                 "}"))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void updateBook() throws Exception {
+        Book book1 = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK,"Cập nhật sách thành công",book1);
+        when(bookService.updateBook(1l, book1)).thenReturn(responseObject);
+        mockMvc.perform(put("/api/books/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"name\":\"Chuyện con mèo dạy hải âu bay\",\n" +
+                                "    \"author\": \"Luis Sepúlveda\",\n" +
+                                "    \"price\": 40000,\n" +
+                                "    \"genre\":\"Tiểu thuyết\"\n" +
+                                "}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateBookNotFound() throws Exception {
+        Book book1 = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        when(bookService.updateBook(1l, book1)).thenThrow(new BookNotFoundException("Sách không tồn tại"));
+        mockMvc.perform(put("/api/books/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"name\":\"Chuyện con mèo dạy hải âu bay\",\n" +
+                                "    \"author\": \"Luis Sepúlveda\",\n" +
+                                "    \"price\": 40000,\n" +
+                                "    \"genre\":\"Tiểu thuyết\"\n" +
+                                "}"))
+                .andExpect(status().isNotFound());
     }
 }

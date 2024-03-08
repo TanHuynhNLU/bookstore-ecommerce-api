@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.swing.text.html.Option;
 
@@ -69,5 +70,27 @@ class BookRepositoryTest {
         Book actualBook = bookRepository.save(book1);
 
         assertEquals("Chuyện con mèo dạy hải âu bay", actualBook.getName());
+    }
+
+    @Test
+    @DisplayName("JUnit test for update book")
+    @DirtiesContext
+    public void whenUpdateBook_thenReturnBookObject() {
+        Book book = Book.builder()
+                .name("Sach01")
+                .author("Tac Gia 1")
+                .price(70_000)
+                .genre("Tiểu thuyết")
+                .build();
+         bookRepository.save(book);
+
+         Book savedBook = bookRepository.findByName("Sach01").get();
+         assertNotNull(savedBook);
+         savedBook.setPrice(50_000);
+         bookRepository.save(savedBook);
+
+         Book updatedBook = bookRepository.findByName("Sach01").get();
+         assertNotNull(updatedBook);
+        assertEquals(50_000, updatedBook.getPrice());
     }
 }

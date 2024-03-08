@@ -29,8 +29,8 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             throw new UserAlreadyExistsException("Tài khoản đã tồn tại");
         } else {
-            userRepository.save(newUser);
-            return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", newUser);
+            User savedUser = userRepository.save(newUser);
+            return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", savedUser);
         }
     }
 
@@ -63,9 +63,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PaginationResponse getUsersByUsernameContaining(String username, int page, int size) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<User> userPage = userRepository.findByUsernameContainingIgnoreCase(username,pageable);
-        PaginationResponse paginationResponse = new PaginationResponse(userPage.getTotalElements(),userPage.getContent(),userPage.getTotalPages(),userPage.getNumber());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findByUsernameContainingIgnoreCase(username, pageable);
+        PaginationResponse paginationResponse = new PaginationResponse(userPage.getTotalElements(), userPage.getContent(), userPage.getTotalPages(), userPage.getNumber());
         return paginationResponse;
     }
 
@@ -95,7 +95,8 @@ public class UserServiceImpl implements UserService {
         userDB.setFullName(user.getFullName());
         userDB.setPhone(user.getPhone());
         userDB.setStatus(user.getStatus());
-        return new ResponseObject(HttpStatus.OK, "Cập nhật tài khoản thành công", userRepository.save(userDB));
+        User savedUser = userRepository.save(userDB);
+        return new ResponseObject(HttpStatus.OK, "Cập nhật tài khoản thành công", savedUser);
     }
 
     @Override

@@ -165,13 +165,20 @@ class UserControllerTest {
     void updateUser() throws Exception {
         User userUpdate = User.builder()
                 .fullName("Tan Huynh")
-                .email("tanhuynh2000@gmail.com").build();
+                .email("tanhuynh2000@gmail.com")
+                .username("tanhuynh123")
+                .password("67890543034")
+                .build();
         ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", userUpdate);
         Mockito.when(userService.updateUser(1L, userUpdate)).thenReturn(responseObject);
-        mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON).content("{\n" +
-                        "\t\"fullName\":\"Tan Huynh\",\n" +
-                        "\t\"email\":\"tanhuynh2000@gmail.com\"\n" +
-                        "}"))
+        mockMvc.perform(put("/api/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"fullName\":\"Tan Huynh\",\n" +
+                                "    \"email\":\"tanhuynh2000@gmail.com\",\n" +
+                                "    \"username\":\"tanhuynh123\",\n" +
+                                "    \"password\":\"67890543034\"\n" +
+                                "}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.fullName").value("Tan Huynh"));
     }

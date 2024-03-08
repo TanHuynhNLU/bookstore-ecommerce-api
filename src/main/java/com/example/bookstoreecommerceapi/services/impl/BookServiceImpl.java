@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.services.impl;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
 import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.repositories.BookRepository;
 import com.example.bookstoreecommerceapi.services.BookService;
@@ -27,8 +28,29 @@ public class BookServiceImpl implements BookService {
     public ResponseObject addNewBook(Book newBook) throws BookAlreadyExistsException {
         Optional<Book> bookOptional = bookRepository.findByName(newBook.getName());
         if (bookOptional.isPresent()) throw new BookAlreadyExistsException("Tên sách đã tồn tại");
-        bookRepository.save(newBook);
-        ResponseObject responseObject = new ResponseObject(HttpStatus.CREATED, "Thêm sách thành công", newBook);
+        Book savedbook = bookRepository.save(newBook);
+        ResponseObject responseObject = new ResponseObject(HttpStatus.CREATED, "Thêm sách thành công", savedbook);
         return responseObject;
+    }
+
+    @Override
+    public ResponseObject updateBook(long id, Book book) throws BookNotFoundException {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (!optionalBook.isPresent()) throw new BookNotFoundException("Sách không tồn tại");
+        Book bookDB = optionalBook.get();
+        bookDB.setName(book.getName());
+        bookDB.setAuthor(book.getAuthor());
+        bookDB.setGenre(book.getGenre());
+        bookDB.setPrice(book.getPrice());
+        bookDB.setStock(book.getStock());
+        bookDB.setDescription(book.getDescription());
+        bookDB.setImage(book.getImage());
+        bookDB.setPublished(book.getPublished());
+        bookDB.setNumberOfPage(book.getNumberOfPage());
+        bookDB.setPublisher(book.getPublisher());
+
+        Book savedBook = bookRepository.save(bookDB);
+
+        return new ResponseObject(HttpStatus.OK, "Cập nhật sách thành công", savedBook);
     }
 }

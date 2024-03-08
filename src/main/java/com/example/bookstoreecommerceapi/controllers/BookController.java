@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
 import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.services.BookService;
 import jakarta.validation.Valid;
@@ -27,5 +28,11 @@ public class BookController {
     public ResponseEntity<ResponseObject> addNewBook(@Valid  @RequestBody Book newBook) throws BookAlreadyExistsException {
         ResponseObject responseObject = bookService.addNewBook(newBook);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseObject> updateBook(@PathVariable long id,@Valid @RequestBody Book book) throws BookNotFoundException {
+        ResponseObject responseObject  = bookService.updateBook(id,book);
+        return ResponseEntity.ok(responseObject);
     }
 }
