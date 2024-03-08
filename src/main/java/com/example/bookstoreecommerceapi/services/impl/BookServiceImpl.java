@@ -53,4 +53,12 @@ public class BookServiceImpl implements BookService {
 
         return new ResponseObject(HttpStatus.OK, "Cập nhật sách thành công", savedBook);
     }
+
+    @Override
+    public ResponseObject deleteBook(long id) throws BookNotFoundException {
+        boolean isExists = bookRepository.existsById(id);
+        if(!isExists) throw new BookNotFoundException("Sách không tồn tại");
+        bookRepository.deleteById(id);
+        return new ResponseObject(HttpStatus.OK,"Xóa sách thành công",null);
+    }
 }

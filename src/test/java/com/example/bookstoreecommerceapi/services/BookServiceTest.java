@@ -38,7 +38,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Junit test for getAllBooks method")
+    @DisplayName("JUnit test for getAllBooks method")
     public void whenGetAllBooks_thenReturnList(){
         Book book1 = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")
@@ -55,7 +55,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Junit test for addNewBook method")
+    @DisplayName("JUnit test for addNewBook method")
     public void whenAddNewBook_thenReturnBookObject() throws BookAlreadyExistsException {
         Book book1 = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")
@@ -71,7 +71,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Junit test for updateBook method")
+    @DisplayName("JUnit test for updateBook method")
     public void whenUpdateBook_thenReturnBookObject() throws  BookNotFoundException {
         Book book = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")
@@ -92,5 +92,15 @@ class BookServiceTest {
         Book actualBook = (Book) responseObject.getData();
         assertNotNull(actualBook);
         assertEquals(80_000,actualBook.getPrice());
+    }
+
+    @Test
+    @DisplayName("JUnit test for deleteBook method")
+    public void whenDeleteBook_thenNothing() throws BookNotFoundException {
+        long bookId = book.getId();
+        when(bookRepository.existsById(bookId)).thenReturn(true);
+        doNothing().when(bookRepository).deleteById(bookId);
+        bookService.deleteBook(bookId);
+        verify(bookRepository,times(1)).deleteById(bookId);
     }
 }

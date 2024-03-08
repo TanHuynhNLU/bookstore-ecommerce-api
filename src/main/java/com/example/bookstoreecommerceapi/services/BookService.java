@@ -11,4 +11,6 @@ public interface BookService {
     ResponseObject addNewBook(Book newBook) throws BookAlreadyExistsException;
 
     ResponseObject updateBook(long id, Book book) throws BookNotFoundException;
+
+    ResponseObject deleteBook(long id) throws BookNotFoundException;
 }

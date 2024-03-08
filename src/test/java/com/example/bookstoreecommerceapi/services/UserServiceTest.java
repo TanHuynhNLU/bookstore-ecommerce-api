@@ -3,6 +3,7 @@ package com.example.bookstoreecommerceapi.services;
 import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
+import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.repositories.UserRepository;
 import com.example.bookstoreecommerceapi.services.impl.UserServiceImpl;
@@ -143,10 +144,11 @@ class UserServiceTest {
     }
     @Test
     @DisplayName("JUnit test for deleteUser method")
-    void whenDeleteUser_thenNothing(){
+    void whenDeleteUser_thenNothing() throws UserNotFoundException {
         long userId = user.getId();
+        when(userRepository.existsById(userId)).thenReturn(true);
         doNothing().when(userRepository).deleteById(userId);
-        userRepository.deleteById(userId);
+        userService.deleteUser(userId);
         verify(userRepository,times(1)).deleteById(userId);
     }
 }

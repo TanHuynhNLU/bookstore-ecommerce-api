@@ -19,20 +19,26 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public ResponseEntity<ResponseObject> getAllBooks(){
+    public ResponseEntity<ResponseObject> getAllBooks() {
         ResponseObject responseObject = bookService.getAllBooks();
         return ResponseEntity.ok(responseObject);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseObject> addNewBook(@Valid  @RequestBody Book newBook) throws BookAlreadyExistsException {
+    public ResponseEntity<ResponseObject> addNewBook(@Valid @RequestBody Book newBook) throws BookAlreadyExistsException {
         ResponseObject responseObject = bookService.addNewBook(newBook);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseObject);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateBook(@PathVariable long id,@Valid @RequestBody Book book) throws BookNotFoundException {
-        ResponseObject responseObject  = bookService.updateBook(id,book);
+    public ResponseEntity<ResponseObject> updateBook(@PathVariable long id, @Valid @RequestBody Book book) throws BookNotFoundException {
+        ResponseObject responseObject = bookService.updateBook(id, book);
+        return ResponseEntity.ok(responseObject);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseObject> deleteBook(@PathVariable long id) throws BookNotFoundException {
+        ResponseObject responseObject = bookService.deleteBook(id);
         return ResponseEntity.ok(responseObject);
     }
 }

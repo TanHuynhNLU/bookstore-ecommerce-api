@@ -48,7 +48,7 @@ class BookControllerTest {
                 .genre("Tiểu thuyết")
                 .build();
         List<Book> mockBooks = List.of(book, book1);
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK,"Thành công",mockBooks);
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", mockBooks);
         when(bookService.getAllBooks()).thenReturn(responseObject);
         mockMvc.perform(get("/api/books"))
                 .andExpect(status().isOk());
@@ -62,7 +62,7 @@ class BookControllerTest {
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.CREATED,"Thêm sách thành công",book1);
+        ResponseObject responseObject = new ResponseObject(HttpStatus.CREATED, "Thêm sách thành công", book1);
         when(bookService.addNewBook(book1)).thenReturn(responseObject);
         mockMvc.perform(post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +103,7 @@ class BookControllerTest {
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
-        ResponseObject responseObject = new ResponseObject(HttpStatus.OK,"Cập nhật sách thành công",book1);
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Cập nhật sách thành công", book1);
         when(bookService.updateBook(1l, book1)).thenReturn(responseObject);
         mockMvc.perform(put("/api/books/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -134,5 +134,13 @@ class BookControllerTest {
                                 "    \"genre\":\"Tiểu thuyết\"\n" +
                                 "}"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteBook() throws Exception {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Xóa sách thành công", null);
+        when(bookService.deleteBook(1L)).thenReturn(responseObject);
+        mockMvc.perform(delete("/api/books/1"))
+                .andExpect(status().isOk());
     }
 }

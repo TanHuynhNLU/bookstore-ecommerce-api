@@ -93,4 +93,19 @@ class BookRepositoryTest {
          assertNotNull(updatedBook);
         assertEquals(50_000, updatedBook.getPrice());
     }
+
+    @Test
+    @DisplayName("JUnit test for deleteById method")
+    public void whenDeleteBook_thenNothing() {
+        Book book = Book.builder()
+                .name("Sach01")
+                .author("Tac Gia 1")
+                .price(70_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book savedBook = bookRepository.save(book);
+
+        bookRepository.deleteById(book.getId());
+        assertFalse(bookRepository.existsById(savedBook.getId()));
+    }
 }
