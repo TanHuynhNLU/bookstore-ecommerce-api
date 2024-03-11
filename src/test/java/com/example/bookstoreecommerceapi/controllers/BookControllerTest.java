@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.controllers;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
@@ -52,6 +53,34 @@ class BookControllerTest {
         when(bookService.getAllBooks()).thenReturn(responseObject);
         mockMvc.perform(get("/api/books"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllBooksPaginationAndSorting() throws Exception {
+        Book book1 = Book.builder()
+                .name("Sach 1")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book2 = Book.builder()
+                .name("Sach 2")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book3 = Book.builder()
+                .name("Sach 3")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        List<Book> mockBooks = List.of(book1, book2,book3);
+        PaginationResponse paginationResponse = new PaginationResponse(3,mockBooks,1,0);
+        when(bookService.getAllBooksPaginationAndSorting(0,3,"id")).thenReturn(paginationResponse);
+        mockMvc.perform(get("/api/books/pagination?page=0&size=3&sort=id"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalItems").value(3));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.controllers;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
@@ -22,6 +23,16 @@ public class BookController {
     public ResponseEntity<ResponseObject> getAllBooks() {
         ResponseObject responseObject = bookService.getAllBooks();
         return ResponseEntity.ok(responseObject);
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<PaginationResponse> getAllBooksPaginationAndSorting(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort
+    ){
+        PaginationResponse paginationResponse = bookService.getAllBooksPaginationAndSorting(page,size,sort);
+        return ResponseEntity.ok(paginationResponse);
     }
 
     @GetMapping("/check-name/{name}")

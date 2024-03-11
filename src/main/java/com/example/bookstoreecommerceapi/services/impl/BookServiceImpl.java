@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.services.impl;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
@@ -7,6 +8,10 @@ import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.repositories.BookRepository;
 import com.example.bookstoreecommerceapi.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,17 @@ public class BookServiceImpl implements BookService {
     public ResponseObject getAllBooks() {
         List<Book> books = bookRepository.findAll();
         return new ResponseObject(HttpStatus.OK, "Thành công", books);
+    }
+
+    @Override
+    public PaginationResponse getAllBooksPaginationAndSorting(int page, int size, String sort) {
+        Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
+        Pageable pageable = PageRequest.of(page, size, direction, property);
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+        PaginationResponse paginationResponse =
+                new PaginationResponse(bookPage.getTotalElements(), bookPage.getContent(), bookPage.getTotalPages(), bookPage.getNumber());
+        return paginationResponse;
     }
 
     @Override

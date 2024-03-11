@@ -1,5 +1,6 @@
 package com.example.bookstoreecommerceapi.services;
 
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -53,6 +55,37 @@ class BookServiceTest {
         List<Book> actualBooks = (List<Book>) responseObject.getData();
         assertNotNull(actualBooks);
         assertEquals(2, actualBooks.size());
+    }
+
+    @Test
+    @DisplayName("JUnit test for getAllBooksPaginationAndSorting method")
+    public void whenGetAllBooksPaginationAndSorting_thenReturnList() {
+        Book book1 = Book.builder()
+                .name("Sach 1")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book2 = Book.builder()
+                .name("Sach 2")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book3 = Book.builder()
+                .name("Sach 3")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        List<Book> mockBooks = List.of(book1, book2,book3);
+        Pageable pageable = PageRequest.of(0,2, Sort.Direction.ASC,"id");
+        Page<Book> mockBookPage = new PageImpl<>(mockBooks);
+        when(bookRepository.findAll(pageable)).thenReturn(mockBookPage);
+        PaginationResponse paginationResponse = bookService.getAllBooksPaginationAndSorting(0,2,"id");
+
+        assertNotNull(paginationResponse);
+        assertEquals(3,paginationResponse.getTotalItems());
     }
 
     @Test

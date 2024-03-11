@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.swing.text.html.Option;
@@ -48,6 +52,38 @@ class BookRepositoryTest {
 
         assertNotNull(bookRepository.findAll());
         assertEquals(2, bookRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("JUnit test for findAll method with pageable parameter")
+    public void whenFindAllPagination_ThenReturnList() {
+        Book book1 = Book.builder()
+                .name("Sach 1")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book2 = Book.builder()
+                .name("Sach 2")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book3 = Book.builder()
+                .name("Sach 3")
+                .author("Author 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        testEntityManager.persist(book1);
+        testEntityManager.persist(book2);
+        testEntityManager.persist(book3);
+
+        Pageable pageable = PageRequest.of(0,2, Sort.Direction.ASC,"id");
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+
+        assertNotNull(bookPage.getContent());
+        assertEquals(2, bookPage.getContent().size());
     }
 
     @Test
