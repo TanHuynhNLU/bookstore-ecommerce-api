@@ -59,6 +59,12 @@ class BookRepositoryTest {
     }
 
     @Test
+    @DisplayName("JUnit test for existsByName method")
+    public void whenExistsByName_thenReturnTrue() {
+        assertTrue(bookRepository.existsByName("Nhà giả kim"));
+    }
+
+    @Test
     @DisplayName("JUnit test for save method")
     public void whenSave_ThenReturnBookObject() {
         Book book1 = Book.builder()

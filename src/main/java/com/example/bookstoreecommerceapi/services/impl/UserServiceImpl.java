@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseObject isUsernameExists(String username) {
         boolean isExists = userRepository.existsByUsername(username);
-        ResponseObject responseObject = new ResponseObject();
+        ResponseObject responseObject;
         if (isExists) {
             responseObject = new ResponseObject(HttpStatus.OK, "Tên đăng nhập đã tồn tại", null);
         } else {

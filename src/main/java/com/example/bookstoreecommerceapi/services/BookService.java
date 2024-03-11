@@ -8,9 +8,13 @@ import com.example.bookstoreecommerceapi.models.Book;
 public interface BookService {
     ResponseObject getAllBooks();
 
+
+    ResponseObject isNameExists(String name);
+
     ResponseObject addNewBook(Book newBook) throws BookAlreadyExistsException;
 
     ResponseObject updateBook(long id, Book book) throws BookNotFoundException;
 
     ResponseObject deleteBook(long id) throws BookNotFoundException;
+
 }

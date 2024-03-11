@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,19 +40,27 @@ class BookServiceTest {
 
     @Test
     @DisplayName("JUnit test for getAllBooks method")
-    public void whenGetAllBooks_thenReturnList(){
+    public void whenGetAllBooks_thenReturnList() {
         Book book1 = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")
                 .author("Luis Sepúlveda")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
-       List<Book> mockBooks = List.of(book,book1);
-       when(bookRepository.findAll()).thenReturn(mockBooks);
+        List<Book> mockBooks = List.of(book, book1);
+        when(bookRepository.findAll()).thenReturn(mockBooks);
         ResponseObject responseObject = bookService.getAllBooks();
         List<Book> actualBooks = (List<Book>) responseObject.getData();
         assertNotNull(actualBooks);
-        assertEquals(2,actualBooks.size());
+        assertEquals(2, actualBooks.size());
+    }
+
+    @Test
+    @DisplayName("JUnit test for isNameExists method")
+    public void whenNameExists_thenReturnHttpStatusOk() throws BookNotFoundException {
+        when(bookRepository.existsByName("Nhà giả kim")).thenReturn(true);
+        ResponseObject responseObject = bookService.isNameExists("Nhà giả kim");
+        assertEquals(HttpStatus.OK, responseObject.getStatus());
     }
 
     @Test
@@ -67,12 +76,12 @@ class BookServiceTest {
         ResponseObject responseObject = bookService.addNewBook(book1);
         Book actualBook = (Book) responseObject.getData();
         assertNotNull(actualBook);
-        assertEquals("Chuyện con mèo dạy hải âu bay",actualBook.getName());
+        assertEquals("Chuyện con mèo dạy hải âu bay", actualBook.getName());
     }
 
     @Test
     @DisplayName("JUnit test for updateBook method")
-    public void whenUpdateBook_thenReturnBookObject() throws  BookNotFoundException {
+    public void whenUpdateBook_thenReturnBookObject() throws BookNotFoundException {
         Book book = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")
                 .author("Luis Sepúlveda")
@@ -91,7 +100,7 @@ class BookServiceTest {
         ResponseObject responseObject = bookService.updateBook(1L, updatedBook);
         Book actualBook = (Book) responseObject.getData();
         assertNotNull(actualBook);
-        assertEquals(80_000,actualBook.getPrice());
+        assertEquals(80_000, actualBook.getPrice());
     }
 
     @Test
@@ -101,6 +110,6 @@ class BookServiceTest {
         when(bookRepository.existsById(bookId)).thenReturn(true);
         doNothing().when(bookRepository).deleteById(bookId);
         bookService.deleteBook(bookId);
-        verify(bookRepository,times(1)).deleteById(bookId);
+        verify(bookRepository, times(1)).deleteById(bookId);
     }
 }

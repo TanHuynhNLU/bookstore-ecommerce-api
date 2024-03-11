@@ -24,6 +24,12 @@ public class BookController {
         return ResponseEntity.ok(responseObject);
     }
 
+    @GetMapping("/check-name/{name}")
+    public ResponseEntity<ResponseObject> checkName(@PathVariable String name){
+        ResponseObject responseObject = bookService.isNameExists(name);
+        return ResponseEntity.ok(responseObject);
+    }
+
     @PostMapping
     public ResponseEntity<ResponseObject> addNewBook(@Valid @RequestBody Book newBook) throws BookAlreadyExistsException {
         ResponseObject responseObject = bookService.addNewBook(newBook);

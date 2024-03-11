@@ -55,6 +55,15 @@ class BookControllerTest {
     }
 
     @Test
+    public void checkName() throws Exception {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Tên sách đã tồn tại", null);
+        when(bookService.isNameExists("Nhà giả kim")).thenReturn(responseObject);
+        mockMvc.perform(get("/api/books/check-name/Nhà giả kim"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Tên sách đã tồn tại"));
+    }
+
+    @Test
     public void addNewBook() throws Exception {
         Book book1 = Book.builder()
                 .name("Chuyện con mèo dạy hải âu bay")

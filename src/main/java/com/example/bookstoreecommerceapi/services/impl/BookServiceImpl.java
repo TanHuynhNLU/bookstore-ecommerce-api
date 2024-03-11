@@ -25,6 +25,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public ResponseObject isNameExists(String name) {
+        boolean isExists = bookRepository.existsByName(name);
+        if (isExists)
+            return new ResponseObject(HttpStatus.OK, "Tên sách đã tồn tại", null);
+        else return new ResponseObject(HttpStatus.NOT_FOUND, "Tên sách không tồn tại", null);
+    }
+
+    @Override
     public ResponseObject addNewBook(Book newBook) throws BookAlreadyExistsException {
         Optional<Book> bookOptional = bookRepository.findByName(newBook.getName());
         if (bookOptional.isPresent()) throw new BookAlreadyExistsException("Tên sách đã tồn tại");
@@ -57,8 +65,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseObject deleteBook(long id) throws BookNotFoundException {
         boolean isExists = bookRepository.existsById(id);
-        if(!isExists) throw new BookNotFoundException("Sách không tồn tại");
+        if (!isExists) throw new BookNotFoundException("Sách không tồn tại");
         bookRepository.deleteById(id);
-        return new ResponseObject(HttpStatus.OK,"Xóa sách thành công",null);
+        return new ResponseObject(HttpStatus.OK, "Xóa sách thành công", null);
     }
 }
