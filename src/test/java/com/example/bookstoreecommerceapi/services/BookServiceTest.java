@@ -62,30 +62,61 @@ class BookServiceTest {
     public void whenGetAllBooksPaginationAndSorting_thenReturnList() {
         Book book1 = Book.builder()
                 .name("Sach 1")
-                .author("Author 1")
+                .author("Tac gia 1")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
         Book book2 = Book.builder()
                 .name("Sach 2")
-                .author("Author 1")
+                .author("Tac gia 2")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
         Book book3 = Book.builder()
                 .name("Sach 3")
-                .author("Author 1")
+                .author("Tac gia 3")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
-        List<Book> mockBooks = List.of(book1, book2,book3);
-        Pageable pageable = PageRequest.of(0,2, Sort.Direction.ASC,"id");
+        List<Book> mockBooks = List.of(book1, book2, book3);
+        Pageable pageable = PageRequest.of(0, 2, Sort.Direction.ASC, "id");
         Page<Book> mockBookPage = new PageImpl<>(mockBooks);
         when(bookRepository.findAll(pageable)).thenReturn(mockBookPage);
-        PaginationResponse paginationResponse = bookService.getAllBooksPaginationAndSorting(0,2,"id");
+        PaginationResponse paginationResponse = bookService.getAllBooksPaginationAndSorting(0, 2, "id");
 
         assertNotNull(paginationResponse);
-        assertEquals(3,paginationResponse.getTotalItems());
+        assertEquals(3, paginationResponse.getTotalItems());
+    }
+
+    @Test
+    @DisplayName("JUnit test for searchBooks method")
+    public void whenSearchBooks_thenReturnList() {
+        Book book1 = Book.builder()
+                .name("Sách 1")
+                .author("Tác giả 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book2 = Book.builder()
+                .name("Sách 2")
+                .author("Tác giả 2")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book3 = Book.builder()
+                .name("Sách 3")
+                .author("Tác giả 3")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        List<Book> mockBooks = List.of(book1, book2, book3);
+        Pageable pageable = PageRequest.of(0, 2, Sort.Direction.ASC, "id");
+        Page<Book> mockBookPage = new PageImpl<>(mockBooks);
+        when(bookRepository.searchBooks("sach", 0, pageable)).thenReturn(mockBookPage);
+        PaginationResponse paginationResponse = bookService.searchBooks("sach", 0, 2, "id");
+
+        assertNotNull(paginationResponse);
+        assertEquals(3, paginationResponse.getTotalItems());
     }
 
     @Test

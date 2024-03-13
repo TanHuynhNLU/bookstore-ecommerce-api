@@ -11,6 +11,9 @@ public interface BookService {
 
     PaginationResponse getAllBooksPaginationAndSorting(int page, int size, String sort);
 
+    PaginationResponse searchBooks(String q, int page, int size, String sort);
+
+
     ResponseObject isNameExists(String name);
 
     ResponseObject addNewBook(Book newBook) throws BookAlreadyExistsException;

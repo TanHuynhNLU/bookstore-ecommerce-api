@@ -30,13 +30,24 @@ public class BookController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort
-    ){
-        PaginationResponse paginationResponse = bookService.getAllBooksPaginationAndSorting(page,size,sort);
+    ) {
+        PaginationResponse paginationResponse = bookService.getAllBooksPaginationAndSorting(page, size, sort);
+        return ResponseEntity.ok(paginationResponse);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PaginationResponse> searchBooks(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort
+    ) {
+        PaginationResponse paginationResponse = bookService.searchBooks(q, page, size, sort);
         return ResponseEntity.ok(paginationResponse);
     }
 
     @GetMapping("/check-name/{name}")
-    public ResponseEntity<ResponseObject> checkName(@PathVariable String name){
+    public ResponseEntity<ResponseObject> checkName(@PathVariable String name) {
         ResponseObject responseObject = bookService.isNameExists(name);
         return ResponseEntity.ok(responseObject);
     }

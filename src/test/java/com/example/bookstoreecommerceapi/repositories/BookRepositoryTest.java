@@ -59,19 +59,19 @@ class BookRepositoryTest {
     public void whenFindAllPagination_ThenReturnList() {
         Book book1 = Book.builder()
                 .name("Sach 1")
-                .author("Author 1")
+                .author("Tac gia 1")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
         Book book2 = Book.builder()
                 .name("Sach 2")
-                .author("Author 1")
+                .author("Tac gia 2")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
         Book book3 = Book.builder()
                 .name("Sach 3")
-                .author("Author 1")
+                .author("Tac gia 3")
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
@@ -79,8 +79,43 @@ class BookRepositoryTest {
         testEntityManager.persist(book2);
         testEntityManager.persist(book3);
 
-        Pageable pageable = PageRequest.of(0,2, Sort.Direction.ASC,"id");
+        Pageable pageable = PageRequest.of(0, 2, Sort.Direction.ASC, "id");
         Page<Book> bookPage = bookRepository.findAll(pageable);
+
+        assertNotNull(bookPage.getContent());
+        assertEquals(2, bookPage.getContent().size());
+    }
+
+    @Test
+    @DisplayName("JUnit test for searchBooks method with pageable parameter")
+    public void whenSearchBook_ThenReturnList() {
+        Book book1 = Book.builder()
+                .name("Sách 1")
+                .author("Tác giả 1")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book2 = Book.builder()
+                .name("Sách 2")
+                .author("Tác giả 2")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book book3 = Book.builder()
+                .name("Sách 3")
+                .author("Tác giả 3")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        testEntityManager.persist(book1);
+        testEntityManager.persist(book2);
+        testEntityManager.persist(book3);
+
+        Pageable pageable = PageRequest.of(0, 2, Sort.Direction.ASC, "id");
+        Page<Book> bookPage = bookRepository.searchBooks("sach",0,pageable);
+//        Page<Book> bookPage = bookRepository.searchBooks("tac gia",0,pageable);
+//        Page<Book> bookPage = bookRepository.searchBooks("", 40_000, pageable);
+
 
         assertNotNull(bookPage.getContent());
         assertEquals(2, bookPage.getContent().size());
@@ -124,15 +159,15 @@ class BookRepositoryTest {
                 .price(70_000)
                 .genre("Tiểu thuyết")
                 .build();
-         bookRepository.save(book);
+        bookRepository.save(book);
 
-         Book savedBook = bookRepository.findByName("Sach01").get();
-         assertNotNull(savedBook);
-         savedBook.setPrice(50_000);
-         bookRepository.save(savedBook);
+        Book savedBook = bookRepository.findByName("Sach01").get();
+        assertNotNull(savedBook);
+        savedBook.setPrice(50_000);
+        bookRepository.save(savedBook);
 
-         Book updatedBook = bookRepository.findByName("Sach01").get();
-         assertNotNull(updatedBook);
+        Book updatedBook = bookRepository.findByName("Sach01").get();
+        assertNotNull(updatedBook);
         assertEquals(50_000, updatedBook.getPrice());
     }
 

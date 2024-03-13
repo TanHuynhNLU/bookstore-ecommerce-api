@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,30 @@ public class BookServiceImpl implements BookService {
         PaginationResponse paginationResponse =
                 new PaginationResponse(bookPage.getTotalElements(), bookPage.getContent(), bookPage.getTotalPages(), bookPage.getNumber());
         return paginationResponse;
+    }
+
+    @Override
+    public PaginationResponse searchBooks(String q, int page, int size, String sort) {
+        Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
+        Pageable pageable = PageRequest.of(page, size, direction, property);
+        long price = isNumeric(q) ? Long.parseLong(q) : 0;
+        Page<Book> bookPage = bookRepository.searchBooks(q, price, pageable);
+        PaginationResponse paginationResponse =
+                new PaginationResponse(bookPage.getTotalElements(), bookPage.getContent(), bookPage.getTotalPages(), bookPage.getNumber());
+        return paginationResponse;
+    }
+
+    private static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     @Override
