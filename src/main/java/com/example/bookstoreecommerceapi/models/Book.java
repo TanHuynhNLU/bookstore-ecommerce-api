@@ -31,6 +31,8 @@ public class Book {
     @Min(value = 0, message = "Năm xuất bản phải là số dương")
     private int published;
     private String status;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String image;
 }
