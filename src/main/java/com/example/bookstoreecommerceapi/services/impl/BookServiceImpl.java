@@ -31,6 +31,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public ResponseObject getBookById(long id) throws BookNotFoundException {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if(optionalBook.isPresent()){
+            return new ResponseObject(HttpStatus.OK,"Thành công",optionalBook.get());
+        }else throw new BookNotFoundException("Sách không tồn tại");
+    }
+
+    @Override
     public PaginationResponse getAllBooksPaginationAndSorting(int page, int size, String sort) {
         Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
         String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
@@ -91,7 +99,9 @@ public class BookServiceImpl implements BookService {
         bookDB.setAuthor(book.getAuthor());
         bookDB.setGenre(book.getGenre());
         bookDB.setPrice(book.getPrice());
+        bookDB.setSales(book.getSales());
         bookDB.setStock(book.getStock());
+        bookDB.setStatus(book.getStatus());
         bookDB.setDescription(book.getDescription());
         bookDB.setImage(book.getImage());
         bookDB.setPublished(book.getPublished());

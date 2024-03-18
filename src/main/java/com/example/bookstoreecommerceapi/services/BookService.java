@@ -9,6 +9,9 @@ import com.example.bookstoreecommerceapi.models.Book;
 public interface BookService {
     ResponseObject getAllBooks();
 
+    ResponseObject getBookById(long id) throws BookNotFoundException;
+
+
     PaginationResponse getAllBooksPaginationAndSorting(int page, int size, String sort);
 
     PaginationResponse searchBooks(String q, int page, int size, String sort);

@@ -25,6 +25,12 @@ public class BookController {
         return ResponseEntity.ok(responseObject);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getBookById(@PathVariable long id) throws BookNotFoundException {
+        ResponseObject responseObject = bookService.getBookById(id);
+        return ResponseEntity.ok(responseObject);
+    }
+
     @GetMapping("/pagination")
     public ResponseEntity<PaginationResponse> getAllBooksPaginationAndSorting(
             @RequestParam(defaultValue = "0") int page,

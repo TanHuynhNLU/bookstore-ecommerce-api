@@ -55,6 +55,20 @@ class BookRepositoryTest {
     }
 
     @Test
+    @DisplayName("JUnit test for findById method")
+    public void whenFindById_ThenReturnBookObject() {
+        Book book1 = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Book mockedBook = testEntityManager.persist(book1);
+        Optional<Book> bookOptional = bookRepository.findById(mockedBook.getId());
+        assertEquals("Chuyện con mèo dạy hải âu bay", bookOptional.get().getName());
+    }
+
+    @Test
     @DisplayName("JUnit test for findAll method with pageable parameter")
     public void whenFindAllPagination_ThenReturnList() {
         Book book1 = Book.builder()

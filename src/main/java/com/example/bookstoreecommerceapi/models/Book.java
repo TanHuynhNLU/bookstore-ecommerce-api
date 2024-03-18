@@ -24,11 +24,13 @@ public class Book {
     private int stock;
     @Min(value = 0, message = "Giá bán phải là số dương")
     private long price;
+    private long sales;
     private String author;
     private String publisher;
     private int numberOfPage;
     @Min(value = 0, message = "Năm xuất bản phải là số dương")
     private int published;
+    private String status;
     private String description;
     private String image;
 }

@@ -56,6 +56,21 @@ class BookControllerTest {
     }
 
     @Test
+    public void getBookById() throws Exception {
+        Book book1 = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        ResponseObject responseObject = new ResponseObject(HttpStatus.OK, "Thành công", book1);
+        when(bookService.getBookById(1L)).thenReturn(responseObject);
+        mockMvc.perform(get("/api/books/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.name").value("Chuyện con mèo dạy hải âu bay"));
+    }
+
+    @Test
     public void getAllBooksPaginationAndSorting() throws Exception {
         Book book1 = Book.builder()
                 .name("Sach 1")
@@ -75,9 +90,9 @@ class BookControllerTest {
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
-        List<Book> mockBooks = List.of(book1, book2,book3);
-        PaginationResponse paginationResponse = new PaginationResponse(3,mockBooks,1,0);
-        when(bookService.getAllBooksPaginationAndSorting(0,3,"id")).thenReturn(paginationResponse);
+        List<Book> mockBooks = List.of(book1, book2, book3);
+        PaginationResponse paginationResponse = new PaginationResponse(3, mockBooks, 1, 0);
+        when(bookService.getAllBooksPaginationAndSorting(0, 3, "id")).thenReturn(paginationResponse);
         mockMvc.perform(get("/api/books/pagination?page=0&size=3&sort=id"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalItems").value(3));
@@ -103,9 +118,9 @@ class BookControllerTest {
                 .price(40_000)
                 .genre("Tiểu thuyết")
                 .build();
-        List<Book> mockBooks = List.of(book1, book2,book3);
-        PaginationResponse paginationResponse = new PaginationResponse(3,mockBooks,1,0);
-        when(bookService.searchBooks("sach",0,3,"id")).thenReturn(paginationResponse);
+        List<Book> mockBooks = List.of(book1, book2, book3);
+        PaginationResponse paginationResponse = new PaginationResponse(3, mockBooks, 1, 0);
+        when(bookService.searchBooks("sach", 0, 3, "id")).thenReturn(paginationResponse);
         mockMvc.perform(get("/api/books/search?q=sach&page=0&size=3&sort=id"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalItems").value(3));

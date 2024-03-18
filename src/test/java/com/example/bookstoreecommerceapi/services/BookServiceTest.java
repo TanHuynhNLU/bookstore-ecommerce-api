@@ -58,6 +58,22 @@ class BookServiceTest {
     }
 
     @Test
+    @DisplayName("JUnit test for getBookById method")
+    public void whenGetBookById_thenReturnBookObject() throws BookNotFoundException {
+        Book book1 = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
+        Optional<Book> optionalBook = Optional.of(book1);
+        when(bookRepository.findById(1L)).thenReturn(optionalBook);
+        ResponseObject responseObject = bookService.getBookById(1L);
+        Book actualBook = (Book) responseObject.getData();
+        assertEquals("Luis Sepúlveda", actualBook.getAuthor());
+    }
+
+    @Test
     @DisplayName("JUnit test for getAllBooksPaginationAndSorting method")
     public void whenGetAllBooksPaginationAndSorting_thenReturnList() {
         Book book1 = Book.builder()
