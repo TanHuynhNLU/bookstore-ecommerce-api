@@ -45,9 +45,10 @@ public class UserController {
     public ResponseEntity<PaginationResponse> getUsersByUsernameContaining(
             @RequestParam String username,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-            ){
-        PaginationResponse paginationResponse = userService.getUsersByUsernameContaining(username,page,size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort
+            ) {
+        PaginationResponse paginationResponse = userService.getUsersByUsernameContaining(username, page, size, sort);
         return ResponseEntity.ok(paginationResponse);
     }
 

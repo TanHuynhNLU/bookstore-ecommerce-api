@@ -147,7 +147,7 @@ class UserControllerTest {
         List<User> users = List.of(user1, user2, user3);
 
         PaginationResponse paginationResponse = new PaginationResponse(3, users, 1, 0);
-        Mockito.when(userService.getUsersByUsernameContaining("nguyenvan",0,10)).thenReturn(paginationResponse);
+        Mockito.when(userService.getUsersByUsernameContaining("nguyenvan",0,10,"id")).thenReturn(paginationResponse);
         mockMvc.perform(get("/api/users/search?username=nguyenvan"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalItems").value(3));

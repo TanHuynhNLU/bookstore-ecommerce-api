@@ -59,25 +59,26 @@ class UserServiceTest {
                 .password("123456789")
                 .fullName("Nguyen Van An")
                 .email("nvan2004@gmail.com").build();
-        List<User> mockUsers = List.of(user,user2);
+        List<User> mockUsers = List.of(user, user2);
         when(userRepository.findAll()).thenReturn(mockUsers);
         ResponseObject responseObject = userService.getAllUsers();
         List<User> actualUsers = (List<User>) responseObject.getData();
         assertNotNull(actualUsers);
-        assertEquals(2,actualUsers.size());
+        assertEquals(2, actualUsers.size());
     }
+
     @Test
     @DisplayName("JUnit test for getUserById method")
-    void whenGetUserById_thenReturnUserObject(){
+    void whenGetUserById_thenReturnUserObject() {
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
         User userActual = userRepository.findById(1L).get();
         assertNotNull(userActual);
-        assertEquals("tanhuynh123",userActual.getUsername());
+        assertEquals("tanhuynh123", userActual.getUsername());
     }
 
     @Test
     @DisplayName("Junit test for getAllUsersPaginationAndSorting method")
-    void whenGetAllUsersPaginationAndSorting_thenReturnList(){
+    void whenGetAllUsersPaginationAndSorting_thenReturnList() {
         User user1 = User.builder()
                 .username("nguyenvana")
                 .password("12345678")
@@ -93,21 +94,21 @@ class UserServiceTest {
                 .password("12345678")
                 .fullName("Nguyen Van C")
                 .email("nguyenvanc@gmail.com").build();
-        List<User> users = List.of(user1,user2,user3);
+        List<User> users = List.of(user1, user2, user3);
 
-        Pageable pageable = PageRequest.of(0,3, Sort.Direction.ASC,"id");
+        Pageable pageable = PageRequest.of(0, 3, Sort.Direction.ASC, "id");
 
         Page<User> mockedPage = new PageImpl<>(users);
         when(userRepository.findAll(pageable)).thenReturn(mockedPage);
 
-        PaginationResponse res = userService.getAllUsersPaginationAndSorting(0,3,"id");
+        PaginationResponse res = userService.getAllUsersPaginationAndSorting(0, 3, "id");
         assertNotNull(res);
-        assertEquals(3,res.getTotalItems());
+        assertEquals(3, res.getTotalItems());
     }
 
     @Test
     @DisplayName("Junit test for getUsersByUsernameContaining method")
-    void whenGetUsersByUsernameContaining_thenReturnListUser(){
+    void whenGetUsersByUsernameContaining_thenReturnListUser() {
         User user1 = User.builder()
                 .username("nguyenvana")
                 .password("12345678")
@@ -123,25 +124,26 @@ class UserServiceTest {
                 .password("12345678")
                 .fullName("Nguyen Van C")
                 .email("nguyenvanc@gmail.com").build();
-        List<User> users = List.of(user1,user2,user3);
+        List<User> users = List.of(user1, user2, user3);
 
-        Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "id ");
 
         Page<User> mockedPage = new PageImpl<>(users);
-        when(userRepository.findByUsernameContainingIgnoreCase("nguyenvan",pageable)).thenReturn(mockedPage);
+        when(userRepository.findByUsernameContainingIgnoreCase("nguyenvan", pageable)).thenReturn(mockedPage);
 
-        PaginationResponse paginationResponse = userService.getUsersByUsernameContaining("nguyenvan",0,10);
+        PaginationResponse paginationResponse = userService.getUsersByUsernameContaining("nguyenvan", 0, 10, "id");
         assertNotNull(paginationResponse.getItems());
-        assertEquals(3,paginationResponse.getTotalItems());
+        assertEquals(3, paginationResponse.getTotalItems());
     }
 
     @Test
     @DisplayName("JUnit test for isUsernameExists method")
-    void whenUserExist_thenReturnHttpStatusOk(){
+    void whenUserExist_thenReturnHttpStatusOk() {
         when(userRepository.existsByUsername("tanhuynh123")).thenReturn(true);
         ResponseObject actualResponseObject = userService.isUsernameExists("tanhuynh123");
-        assertEquals(HttpStatus.OK,actualResponseObject.getStatus());
+        assertEquals(HttpStatus.OK, actualResponseObject.getStatus());
     }
+
     @Test
     @DisplayName("JUnit test for deleteUser method")
     void whenDeleteUser_thenNothing() throws UserNotFoundException {
@@ -149,6 +151,6 @@ class UserServiceTest {
         when(userRepository.existsById(userId)).thenReturn(true);
         doNothing().when(userRepository).deleteById(userId);
         userService.deleteUser(userId);
-        verify(userRepository,times(1)).deleteById(userId);
+        verify(userRepository, times(1)).deleteById(userId);
     }
 }

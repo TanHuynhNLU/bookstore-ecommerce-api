@@ -62,8 +62,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PaginationResponse getUsersByUsernameContaining(String username, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PaginationResponse getUsersByUsernameContaining(String username, int page, int size, String sort) {
+        Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
+        Pageable pageable = PageRequest.of(page, size, direction, property);
         Page<User> userPage = userRepository.findByUsernameContainingIgnoreCase(username, pageable);
         PaginationResponse paginationResponse = new PaginationResponse(userPage.getTotalElements(), userPage.getContent(), userPage.getTotalPages(), userPage.getNumber());
         return paginationResponse;

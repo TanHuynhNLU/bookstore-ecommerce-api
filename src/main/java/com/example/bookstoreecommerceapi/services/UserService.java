@@ -16,7 +16,7 @@ public interface UserService {
 
     PaginationResponse getAllUsersPaginationAndSorting(int page, int size, String sort);
 
-    PaginationResponse getUsersByUsernameContaining(String username, int page, int size);
+    PaginationResponse getUsersByUsernameContaining(String username, int page, int size, String sort);
 
     ResponseObject isUsernameExists(String username);
 
