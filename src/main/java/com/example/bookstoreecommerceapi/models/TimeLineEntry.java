@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -18,11 +19,16 @@ public class TimeLineEntry {
     @Id
     @SequenceGenerator(name = "timeLineEntry_sequence", sequenceName = "timeLineEntry_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "timeLineEntry_sequence")
-    private String id;
+    private Long id;
     private String event;
     private Date dateCreated;
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     @JsonIgnore
     private Order order;
+
+    public String getDateCreated() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+        return sdf.format(dateCreated);
+    }
 }

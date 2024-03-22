@@ -1,7 +1,9 @@
 package com.example.bookstoreecommerceapi.repositories;
 
+import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.models.Customer;
 import com.example.bookstoreecommerceapi.models.Order;
+import com.example.bookstoreecommerceapi.models.OrderDetail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,64 +12,47 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class OrderRepositoryTest {
+class OrderDetailRepositoryTest {
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderDetailRepository orderDetailRepository;
     @Autowired
     private TestEntityManager testEntityManager;
+    private Order order;
+    private Book book;
+
     @BeforeEach
     void setUp() {
         Customer customer = Customer.builder()
-                .email("customertesting@gmail.com")
-                .phone("0123456789")
-                .payment("Tiền mặt")
-                .name("Customer Testing")
-                .build();
-        Order order = Order.builder()
-                .customer(customer)
-                .status("Đang xử lý")
-                .build();
-        testEntityManager.persist(order);
-    }
-    @Test
-    @DisplayName("JUnit test for findAll method")
-    void whenFindAll_thenReturnList(){
-        Customer customer = Customer.builder()
                 .email("customertesting1@gmail.com")
                 .phone("0123456789")
                 .payment("Tiền mặt")
                 .name("Customer Testing 1")
                 .build();
-        Order order = Order.builder()
+        order = Order.builder()
                 .customer(customer)
                 .status("Đang xử lý")
                 .build();
+        book = Book.builder()
+                .name("Chuyện con mèo dạy hải âu bay")
+                .author("Luis Sepúlveda")
+                .price(40_000)
+                .genre("Tiểu thuyết")
+                .build();
         testEntityManager.persist(order);
-
-        List<Order> actualOrders = orderRepository.findAll();
-        assertNotNull(actualOrders);
-        assertEquals(2, actualOrders.size());
+        testEntityManager.persist(book);
     }
-
     @Test
     @DisplayName("JUnit test for save method")
-    void whenSave_thenReturnOrderObject(){
-        Customer customer = Customer.builder()
-                .email("customertesting1@gmail.com")
-                .phone("0123456789")
-                .payment("Tiền mặt")
-                .name("Customer Testing 1")
+    void whenSave_thenReturnOrderDetailObject(){
+        OrderDetail orderDetail = OrderDetail.builder()
+                .order(order)
+                .book(book)
+                .quantity(1)
                 .build();
-        Order order = Order.builder()
-                .customer(customer)
-                .status("Đang xử lý")
-                .build();
-        Order actualOrder = orderRepository.save(order);
-        assertNotNull(actualOrder);
+        OrderDetail actualOrderDetail = orderDetailRepository.save(orderDetail);
+        assertNotNull(actualOrderDetail);
     }
 }
