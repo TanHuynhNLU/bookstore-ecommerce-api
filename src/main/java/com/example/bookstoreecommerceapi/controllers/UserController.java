@@ -6,6 +6,7 @@ import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
 import com.example.bookstoreecommerceapi.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/users")
+@Tag(name = "User")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -47,7 +49,7 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sort
-            ) {
+    ) {
         PaginationResponse paginationResponse = userService.getUsersByUsernameContaining(username, page, size, sort);
         return ResponseEntity.ok(paginationResponse);
     }

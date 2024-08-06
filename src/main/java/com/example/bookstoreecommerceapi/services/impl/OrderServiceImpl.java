@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.services.impl;
 
 import com.example.bookstoreecommerceapi.dto.OrderDetailRequest;
 import com.example.bookstoreecommerceapi.dto.OrderRequest;
+import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
 import com.example.bookstoreecommerceapi.models.Book;
@@ -14,6 +15,10 @@ import com.example.bookstoreecommerceapi.repositories.OrderRepository;
 import com.example.bookstoreecommerceapi.repositories.TimeLineEntryRepository;
 import com.example.bookstoreecommerceapi.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,5 +77,16 @@ public class OrderServiceImpl implements OrderService {
             }
         ResponseObject responseObject = new ResponseObject(HttpStatus.CREATED, "Thành công", savedOrder);
         return responseObject;
+    }
+
+    @Override
+    public PaginationResponse getAllOrdersPaginationAndSorting(int page, int size, String sort) {
+        Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
+        Pageable pageable = PageRequest.of(page, size, direction, property);
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+        PaginationResponse paginationResponse =
+                new PaginationResponse(orderPage.getTotalElements(), orderPage.getContent(), orderPage.getTotalPages(), orderPage.getNumber());
+        return paginationResponse;
     }
 }

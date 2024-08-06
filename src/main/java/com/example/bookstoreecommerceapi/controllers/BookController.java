@@ -6,6 +6,7 @@ import com.example.bookstoreecommerceapi.exceptions.BookAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
 import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.services.BookService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/books")
+@Tag(name = "Book")
 public class BookController {
     @Autowired
     private BookService bookService;

@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.services.StorageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @CrossOrigin
 @RequestMapping("/api/FileUpload")
+@Tag(name = "File Upload")
 public class FileUploadController {
     @Autowired
     StorageService storageService;
