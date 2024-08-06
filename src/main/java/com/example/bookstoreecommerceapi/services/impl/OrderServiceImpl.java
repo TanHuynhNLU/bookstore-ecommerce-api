@@ -5,6 +5,7 @@ import com.example.bookstoreecommerceapi.dto.OrderRequest;
 import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
+import com.example.bookstoreecommerceapi.exceptions.OrderNotFoundException;
 import com.example.bookstoreecommerceapi.models.Book;
 import com.example.bookstoreecommerceapi.models.Order;
 import com.example.bookstoreecommerceapi.models.OrderDetail;
@@ -88,5 +89,15 @@ public class OrderServiceImpl implements OrderService {
         PaginationResponse paginationResponse =
                 new PaginationResponse(orderPage.getTotalElements(), orderPage.getContent(), orderPage.getTotalPages(), orderPage.getNumber());
         return paginationResponse;
+    }
+
+    @Override
+    public ResponseObject getOrderById(long id) throws OrderNotFoundException {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if(orderOptional.isPresent()) {
+            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional);
+        }else {
+            throw new OrderNotFoundException("Đơn hàng không tồn tại");
+        }
     }
 }

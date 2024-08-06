@@ -4,6 +4,7 @@ import com.example.bookstoreecommerceapi.dto.OrderRequest;
 import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.exceptions.BookNotFoundException;
+import com.example.bookstoreecommerceapi.exceptions.OrderNotFoundException;
 import com.example.bookstoreecommerceapi.models.Order;
 import com.example.bookstoreecommerceapi.services.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,6 +35,11 @@ public class OrderController {
     ) {
         PaginationResponse paginationResponse = orderService.getAllOrdersPaginationAndSorting(page, size, sort);
         return ResponseEntity.ok(paginationResponse);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getOrderById(@PathVariable long id) throws OrderNotFoundException {
+        ResponseObject responseObject = orderService.getOrderById(id);
+        return ResponseEntity.ok(responseObject);
     }
 
     @PostMapping()
