@@ -23,12 +23,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Field;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -94,8 +92,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseObject getOrderById(long id) throws OrderNotFoundException {
         Optional<Order> orderOptional = orderRepository.findById(id);
-        if(orderOptional.isPresent()) {
-            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional);
+        if (orderOptional.isPresent()) {
+            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional.get());
+        } else {
+            throw new OrderNotFoundException("Đơn hàng không tồn tại");
+        }
+    }
+
+    @Override
+    public ResponseObject updateOrderPartially(long id, Map<String, Object> fields) throws OrderNotFoundException {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            Order orderDB = orderOptional.get();
+            fields.forEach((key, value) -> {
+                Field field = ReflectionUtils.findField(Order.class, key);
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, orderDB, value);
+            });
+            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional.get());
         }else {
             throw new OrderNotFoundException("Đơn hàng không tồn tại");
         }
