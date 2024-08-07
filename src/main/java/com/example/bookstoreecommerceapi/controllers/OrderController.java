@@ -53,7 +53,6 @@ public class OrderController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ResponseObject> updateOrderPartially(@PathVariable long id, @RequestBody Map<String, Object> fields) throws  OrderNotFoundException {
-        System.out.println("aaa");
         ResponseObject responseObject = orderService.updateOrderPartially(id, fields);
         return ResponseEntity.status(HttpStatus.OK).body(responseObject);
     }
