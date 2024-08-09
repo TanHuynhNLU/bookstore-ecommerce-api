@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
                 field.setAccessible(true);
                 ReflectionUtils.setField(field, orderDB, value);
             });
-            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional.get());
+            return new ResponseObject(HttpStatus.OK, "Thành công", orderRepository.save(orderDB));
         }else {
             throw new OrderNotFoundException("Đơn hàng không tồn tại");
         }

@@ -44,4 +44,16 @@ public class GlobalExceptionHandler {
         ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND, e.getMessage(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
     }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ResponseObject> handleOrderNotFoundException(OrderNotFoundException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND, e.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
+    }
+
+    @ExceptionHandler(ContactNotFoundException.class)
+    public ResponseEntity<ResponseObject> handleContactNotFoundException(ContactNotFoundException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND, e.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
+    }
 }
