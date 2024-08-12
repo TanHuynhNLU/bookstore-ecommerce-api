@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -43,6 +45,82 @@ public class OrderServiceImpl implements OrderService {
     public ResponseObject getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         return new ResponseObject(HttpStatus.OK, "Thành công", orders);
+    }
+
+    @Override
+    public PaginationResponse getAllOrdersPaginationAndSorting(int page, int size, String sort) {
+        Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
+        Pageable pageable = PageRequest.of(page, size, direction, property);
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+        PaginationResponse paginationResponse =
+                new PaginationResponse(orderPage.getTotalElements(), orderPage.getContent(), orderPage.getTotalPages(), orderPage.getNumber());
+        return paginationResponse;
+    }
+
+    @Override
+    public ResponseObject getChartData() {
+        // Get the current year
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        String status = "Hoàn tất";  // Status to filter
+
+        // Fetch orders from the repository for the current year with status "Hoàn tất"
+        List<Order> orders = orderRepository.findCompletedOrdersByCurrentYear(currentYear, status);
+
+        // Aggregate data by month
+        Map<String, List<Order>> ordersByMonth = orders.stream()
+                .collect(Collectors.groupingBy(order -> new SimpleDateFormat("MM-yyyy").format(order.getDateCreatedOrdinal())));
+
+        List<String> labels = new ArrayList<>();
+        List<Long> totalOrders = new ArrayList<>();
+        List<Long> totalPrices = new ArrayList<>();
+
+        // Iterate over all months of the current year
+        Calendar calendar = Calendar.getInstance();
+        int income = 0;
+        for (int month = 0; month <= currentMonth; month++) {
+            calendar.set(currentYear, month, 1);
+            String monthLabel = new SimpleDateFormat("MM-yyyy").format(calendar.getTime());
+
+            if (ordersByMonth.containsKey(monthLabel)) {
+                List<Order> monthlyOrders = ordersByMonth.get(monthLabel);
+
+                labels.add(monthLabel.substring(0, 2));
+                totalOrders.add((long) monthlyOrders.size());
+
+                long totalPrice = 0;
+                for (Order order : monthlyOrders) {
+                    totalPrice += order.getTotalPrice();
+                }
+                income += totalPrice;
+                totalPrices.add(totalPrice);
+            } else {
+                // If no orders for this month, add zero values
+                labels.add(monthLabel.substring(0, 2));
+                totalOrders.add(0L);
+                totalPrices.add(0L);
+            }
+        }
+
+        // Package data into a map
+        Map<String, Object> chartData = new HashMap<>();
+        chartData.put("labels", labels);
+        chartData.put("totalOrders", totalOrders);
+        chartData.put("totalPrices", totalPrices);
+        chartData.put("income", income);
+
+        return new ResponseObject(HttpStatus.OK, "Thành công", chartData);
+    }
+
+    @Override
+    public ResponseObject getOrderById(long id) throws OrderNotFoundException {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional.get());
+        } else {
+            throw new OrderNotFoundException("Đơn hàng không tồn tại");
+        }
     }
 
     @Transactional
@@ -79,27 +157,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PaginationResponse getAllOrdersPaginationAndSorting(int page, int size, String sort) {
-        Sort.Direction direction = sort.startsWith("-") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        String property = direction == Sort.Direction.DESC ? sort.substring(1) : sort;
-        Pageable pageable = PageRequest.of(page, size, direction, property);
-        Page<Order> orderPage = orderRepository.findAll(pageable);
-        PaginationResponse paginationResponse =
-                new PaginationResponse(orderPage.getTotalElements(), orderPage.getContent(), orderPage.getTotalPages(), orderPage.getNumber());
-        return paginationResponse;
-    }
-
-    @Override
-    public ResponseObject getOrderById(long id) throws OrderNotFoundException {
-        Optional<Order> orderOptional = orderRepository.findById(id);
-        if (orderOptional.isPresent()) {
-            return new ResponseObject(HttpStatus.OK, "Thành công", orderOptional.get());
-        } else {
-            throw new OrderNotFoundException("Đơn hàng không tồn tại");
-        }
-    }
-
-    @Override
     public ResponseObject updateOrderPartially(long id, Map<String, Object> fields) throws OrderNotFoundException {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isPresent()) {
@@ -110,8 +167,10 @@ public class OrderServiceImpl implements OrderService {
                 ReflectionUtils.setField(field, orderDB, value);
             });
             return new ResponseObject(HttpStatus.OK, "Thành công", orderRepository.save(orderDB));
-        }else {
+        } else {
             throw new OrderNotFoundException("Đơn hàng không tồn tại");
         }
     }
+
+
 }

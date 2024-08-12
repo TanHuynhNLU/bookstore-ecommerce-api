@@ -11,11 +11,15 @@ import java.util.Map;
 public interface OrderService {
     ResponseObject getAllOrders();
 
-    ResponseObject addNewOrder(OrderRequest orderRequest) throws BookNotFoundException;
-
     PaginationResponse getAllOrdersPaginationAndSorting(int page, int size, String sort);
+
+    ResponseObject getChartData();
 
     ResponseObject getOrderById(long id) throws OrderNotFoundException;
 
+    ResponseObject addNewOrder(OrderRequest orderRequest) throws BookNotFoundException;
+
+
     ResponseObject updateOrderPartially(long id, Map<String, Object> fields) throws OrderNotFoundException;
+
 }

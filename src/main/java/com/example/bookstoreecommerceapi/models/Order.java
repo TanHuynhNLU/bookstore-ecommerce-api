@@ -38,6 +38,10 @@ public class Order {
         return sdf.format(dateCreated);
     }
 
+    public Date getDateCreatedOrdinal() {
+        return this.dateCreated;
+    }
+
     public long getTotalPrice() {
         if(orderDetails==null) return 0;
         for (OrderDetail orderDetail : orderDetails) {

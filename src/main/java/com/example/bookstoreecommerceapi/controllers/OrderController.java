@@ -39,6 +39,12 @@ public class OrderController {
         return ResponseEntity.ok(paginationResponse);
     }
 
+    @GetMapping("/chart-data")
+    public ResponseEntity<ResponseObject> getChartData() {
+        ResponseObject responseObject = orderService.getChartData();
+        return ResponseEntity.ok(responseObject);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getOrderById(@PathVariable long id) throws OrderNotFoundException {
         ResponseObject responseObject = orderService.getOrderById(id);
