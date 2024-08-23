@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +32,8 @@ public class InitialData {
     private OrderService orderService;
     @Autowired
     private ContactService contactService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Test
@@ -38,7 +41,7 @@ public class InitialData {
         User user1 = User.builder()
                 .fullName("Nguyễn Văn Hoàng")
                 .username("nvhoang")
-                .password("12345678")
+                .password(passwordEncoder.encode("12345678"))
                 .email("nvhoang@gmail.com")
                 .role("USER")
                 .gender("Nam")
@@ -53,7 +56,7 @@ public class InitialData {
         User user2 = User.builder()
                 .fullName("Nguyễn Trung Hậu")
                 .username("nthau")
-                .password("12345678")
+                .password(passwordEncoder.encode("12345678"))
                 .email("nthau@gmail.com")
                 .role("USER")
                 .gender("Nam")
@@ -68,7 +71,7 @@ public class InitialData {
         User user3 = User.builder()
                 .fullName("Nguyễn Văn Quyết")
                 .username("nvquyet")
-                .password("12345678")
+                .password(passwordEncoder.encode("12345678"))
                 .email("nvquyet@gmail.com")
                 .role("USER")
                 .gender("Nam")
@@ -83,7 +86,7 @@ public class InitialData {
         User user4 = User.builder()
                 .fullName("Hồng Văn Sơn")
                 .username("hvson")
-                .password("12345678")
+                .password(passwordEncoder.encode("12345678"))
                 .email("hvson@gmail.com")
                 .role("USER")
                 .gender("Nam")
@@ -98,7 +101,7 @@ public class InitialData {
         User user5 = User.builder()
                 .fullName("Nguyễn Huy Chấn")
                 .username("nhchan")
-                .password("12345678")
+                .password(passwordEncoder.encode("12345678"))
                 .email("nhchan@gmail.com")
                 .role("USER")
                 .gender("Nam")
@@ -109,6 +112,21 @@ public class InitialData {
                 .avatar("http://localhost:8080/api/FileUpload/files/avatar5.png")
                 .build();
         userRepository.save(user5);
+
+        User user6 = User.builder()
+                .fullName("Huỳnh Ngọc Tấn")
+                .username("tanhuynh")
+                .password(passwordEncoder.encode("tanhuynh"))
+                .email("tanhuynh@gmail.com")
+                .role("ADMIN")
+                .gender("Nam")
+                .address("TPHCM")
+                .phone("1324657989")
+                .dateRegistered(new Date())
+                .status("Kích hoạt")
+                .avatar("http://localhost:8080/api/FileUpload/files/avatar5.png")
+                .build();
+        userRepository.save(user6);
     }
 
     @Test

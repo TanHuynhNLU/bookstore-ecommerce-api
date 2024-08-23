@@ -1,5 +1,7 @@
 package com.example.bookstoreecommerceapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ public class User {
     @NotBlank(message = "Vui lòng nhập tên đăng nhập")
     private String username;
     @Size(min = 8,message = "Mật khẩu bao gồm ít nhất 8 kí tự")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Email(message = "Vui lòng nhập đúng định dạng email")
     private String email;

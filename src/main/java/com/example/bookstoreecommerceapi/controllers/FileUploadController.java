@@ -2,11 +2,15 @@ package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
 import com.example.bookstoreecommerceapi.services.StorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +23,8 @@ public class FileUploadController {
     StorageService storageService;
 
     @PostMapping
-    public ResponseEntity<ResponseObject> uploadFile(@RequestParam("file")MultipartFile file){
+    @PermitAll
+    public ResponseEntity<ResponseObject> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             String generatedFileName = storageService.storageFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -37,14 +42,15 @@ public class FileUploadController {
     }
 
     @GetMapping("/files/{filename:.+}")
-    public ResponseEntity<byte[]> readDetailFile(@PathVariable String filename){
-        try{
+    @PermitAll
+    public ResponseEntity<byte[]> readDetailFile(@PathVariable String filename) {
+        try {
             byte[] bytes = storageService.readFileContent(filename);
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(bytes);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity
                     .noContent().build();
         }

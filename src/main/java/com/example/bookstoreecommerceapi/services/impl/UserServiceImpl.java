@@ -1,7 +1,7 @@
 package com.example.bookstoreecommerceapi.services.impl;
 
-import com.example.bookstoreecommerceapi.dto.PaginationResponse;
-import com.example.bookstoreecommerceapi.dto.ResponseObject;
+import com.example.bookstoreecommerceapi.configs.JwtService;
+import com.example.bookstoreecommerceapi.dto.*;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
@@ -13,8 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +28,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private MyUserDetailService myUserDetailService;
 
     @Override
     public ResponseObject addNewUser(User newUser) throws UserAlreadyExistsException {
@@ -29,6 +43,8 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             throw new UserAlreadyExistsException("Tài khoản đã tồn tại");
         } else {
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            newUser.setDateRegistered(new Date());
             User savedUser = userRepository.save(newUser);
             return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", savedUser);
         }
@@ -81,6 +97,24 @@ public class UserServiceImpl implements UserService {
             responseObject = new ResponseObject(HttpStatus.NOT_FOUND, "Tên đăng nhập không tồn tại", null);
         }
         return responseObject;
+    }
+
+    @Override
+    public ResponseObject login(LoginForm loginForm) {
+        Authentication authentication = authenticationManager.authenticate(new
+                UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
+        if (authentication.isAuthenticated()) {
+            User user = userRepository.findByUsername(loginForm.getUsername()).get();
+            String token = jwtService.generateToken(myUserDetailService.loadUserByUsername(loginForm.getUsername()));
+            UserLogin userLogin = UserLogin.builder()
+                    .user(user)
+                    .token(token)
+                    .build();
+            return new ResponseObject(HttpStatus.OK,"Thành công",userLogin);
+        } else {
+            return new ResponseObject(HttpStatus.OK,"Sai tên đăng nhập hoặc mật khẩu",null);
+        }
+
     }
 
     @Override
