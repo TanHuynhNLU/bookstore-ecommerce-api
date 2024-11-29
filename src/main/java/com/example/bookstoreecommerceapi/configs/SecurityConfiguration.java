@@ -19,8 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
+//@EnableWebSecurity
+//@EnableMethodSecurity
 public class SecurityConfiguration {
     @Autowired
     private MyUserDetailService myUserDetailService;
@@ -35,9 +35,9 @@ public class SecurityConfiguration {
                                 .requestMatchers("/v3/api-docs/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html", "/api/auth/**", "/api/FileUpload/**").permitAll()
-                                .anyRequest().authenticated()
-                        )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                                .anyRequest().permitAll()
+                        );
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

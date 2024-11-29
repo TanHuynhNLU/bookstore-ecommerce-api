@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/books")
@@ -25,24 +27,31 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<ResponseObject> getAllBooks() {
         ResponseObject responseObject = bookService.getAllBooks();
         return ResponseEntity.ok(responseObject);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<PaginationResponse> getBooks(
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) List<String> publishers,
+            @RequestParam(required = false) List<String> priceRanges,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort
+    ) {
+        PaginationResponse paginationResponse = bookService.getBooks(genres, publishers, priceRanges, page, size, sort);
+        return ResponseEntity.ok(paginationResponse);
+    }
+
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<ResponseObject> getBookById(@PathVariable long id) throws BookNotFoundException {
         ResponseObject responseObject = bookService.getBookById(id);
         return ResponseEntity.ok(responseObject);
     }
 
     @GetMapping("/pagination")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<PaginationResponse> getAllBooksPaginationAndSorting(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -53,8 +62,6 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<PaginationResponse> searchBooks(
             @RequestParam String q,
             @RequestParam(defaultValue = "0") int page,
@@ -66,8 +73,6 @@ public class BookController {
     }
 
     @GetMapping("/check-name/{name}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<ResponseObject> checkName(@PathVariable String name) {
         ResponseObject responseObject = bookService.isNameExists(name);
         return ResponseEntity.ok(responseObject);
