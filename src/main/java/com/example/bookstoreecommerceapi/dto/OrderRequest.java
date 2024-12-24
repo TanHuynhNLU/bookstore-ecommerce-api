@@ -14,5 +14,7 @@ import java.util.List;
 @Builder
 public class OrderRequest {
     private Customer customer;
+    private String note;
+    private int shippingTax;
     private List<OrderDetailRequest> orderDetailRequests;
 }

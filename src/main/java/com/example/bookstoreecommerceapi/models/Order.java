@@ -30,6 +30,9 @@ public class Order {
     private List<TimeLineEntry> timeLineEntries;
     private Date dateCreated;
     private int shippingTax;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String note;
     @Transient
     private long totalPrice;
 

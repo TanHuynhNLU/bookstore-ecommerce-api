@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Customer {
     private String name;
-    @NotBlank(message = "Vui lòng nhập email")
-    @Email(message = "Vui lòng nhập đúng định dạng email")
     private String email;
     @NotBlank(message = "Vui lòng nhập số điện thoại")
     @Min(value = 10, message = "Vui lòng nhập đủ 10 chữ số")

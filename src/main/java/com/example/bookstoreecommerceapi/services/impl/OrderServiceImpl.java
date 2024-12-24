@@ -130,6 +130,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .customer(orderRequest.getCustomer())
                 .status("Đang xử lý")
+                .note(orderRequest.getNote())
+                .shippingTax(orderRequest.getShippingTax())
                 .dateCreated(currentDate)
                 .build();
         Order savedOrder = orderRepository.save(order);
