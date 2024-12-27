@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,14 +42,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseObject addNewUser(User newUser) throws UserAlreadyExistsException {
         Optional<User> userOptional = userRepository.findByUsername(newUser.getUsername());
+
         if (userOptional.isPresent()) {
             throw new UserAlreadyExistsException("Tài khoản đã tồn tại");
-        } else {
-            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            newUser.setDateRegistered(new Date());
-            User savedUser = userRepository.save(newUser);
-            return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", savedUser);
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getCredentials() instanceof String)) {
+            newUser.setRole("USER");
+        } else {
+            String token = (String) authentication.getCredentials();
+            if (token.isEmpty()) newUser.setRole("USER");
+            else {
+                String username = jwtService.extractUsername(token);
+                Optional<User> userRequestOptional = userRepository.findByUsername(username);
+                if (userRequestOptional.isPresent() && userRequestOptional.get().getRole().equals("USER")) {
+                    newUser.setRole("USER");
+                }
+            }
+        }
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        newUser.setDateRegistered(new Date());
+        User savedUser = userRepository.save(newUser);
+        return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", savedUser);
+
     }
 
     @Override
@@ -110,9 +127,9 @@ public class UserServiceImpl implements UserService {
                     .user(user)
                     .token(token)
                     .build();
-            return new ResponseObject(HttpStatus.OK,"Thành công",userLogin);
+            return new ResponseObject(HttpStatus.OK, "Thành công", userLogin);
         } else {
-            return new ResponseObject(HttpStatus.OK,"Sai tên đăng nhập hoặc mật khẩu",null);
+            return new ResponseObject(HttpStatus.NOT_FOUND, "Sai tên đăng nhập hoặc mật khẩu", null);
         }
 
     }
