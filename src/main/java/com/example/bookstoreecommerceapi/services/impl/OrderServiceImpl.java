@@ -123,6 +123,13 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public ResponseObject getOrderByEmail(String email) {
+        List<Order> list = orderRepository.findByCustomerEmail(email);
+        return new ResponseObject(HttpStatus.OK, "Thành công", list);
+    }
+
+
     @Transactional
     @Override
     public ResponseObject addNewOrder(OrderRequest orderRequest) throws BookNotFoundException {

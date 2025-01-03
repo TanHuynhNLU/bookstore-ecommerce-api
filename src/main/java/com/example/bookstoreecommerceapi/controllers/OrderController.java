@@ -61,6 +61,12 @@ public class OrderController {
         return ResponseEntity.ok(responseObject);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<ResponseObject> getOrderByEmail(@RequestParam String email) throws OrderNotFoundException {
+        ResponseObject responseObject = orderService.getOrderByEmail(email);
+        return ResponseEntity.ok(responseObject);
+    }
+
     @PostMapping()
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @Operation(security = {@SecurityRequirement(name = "Bearer key")})

@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         }
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setDateRegistered(new Date());
+        newUser.setStatus("Kích hoạt");
         User savedUser = userRepository.save(newUser);
         return new ResponseObject(HttpStatus.CREATED, "Thêm tài khoản thành công", savedUser);
 
@@ -138,13 +139,23 @@ public class UserServiceImpl implements UserService {
     public ResponseObject updateUser(long id, User user) throws UserNotFoundException {
         Optional<User> optionalUserDB = userRepository.findById(id);
         if (!optionalUserDB.isPresent()) throw new UserNotFoundException("Tài khoản không tồn tại");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userDB = optionalUserDB.get();
+        if (authentication != null && (authentication.getCredentials() instanceof String)) {
+            String token = (String) authentication.getCredentials();
+            if (!token.isEmpty()) {
+                String username = jwtService.extractUsername(token);
+                Optional<User> userRequestOptional = userRepository.findByUsername(username);
+                if (userRequestOptional.isPresent() && userRequestOptional.get().getRole().equals("ADMIN")) {
+                    userDB.setRole(user.getRole());
+                }
+            }
+        }
         userDB.setAvatar(user.getAvatar());
         userDB.setBirthday(user.getBirthday());
         userDB.setAddress(user.getAddress());
         userDB.setEmail(user.getEmail());
         userDB.setGender(user.getGender());
-        userDB.setRole(user.getRole());
         userDB.setFullName(user.getFullName());
         userDB.setPhone(user.getPhone());
         userDB.setStatus(user.getStatus());

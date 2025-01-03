@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findById(Long id);
 
+    List<Order> findByCustomerEmail(String email);
+
     @Query("SELECT o FROM Order o WHERE YEAR(o.dateCreated) = :currentYear AND o.status = :status")
     List<Order> findCompletedOrdersByCurrentYear(@Param("currentYear") int currentYear, @Param("status") String status);
 }

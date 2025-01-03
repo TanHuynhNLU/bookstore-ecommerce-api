@@ -17,6 +17,8 @@ public interface OrderService {
 
     ResponseObject getOrderById(long id) throws OrderNotFoundException;
 
+    ResponseObject getOrderByEmail(String email);
+
     ResponseObject addNewOrder(OrderRequest orderRequest) throws BookNotFoundException;
 
 
