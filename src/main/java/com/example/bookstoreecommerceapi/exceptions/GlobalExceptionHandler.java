@@ -56,4 +56,10 @@ public class GlobalExceptionHandler {
         ResponseObject responseObject = new ResponseObject(HttpStatus.NOT_FOUND, e.getMessage(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObject);
     }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<ResponseObject> handleIncorrectPasswordException(IncorrectPasswordException e) {
+        ResponseObject responseObject = new ResponseObject(HttpStatus.BAD_REQUEST, e.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseObject);
+    }
 }

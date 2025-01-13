@@ -1,9 +1,11 @@
 package com.example.bookstoreecommerceapi.controllers;
 
 import com.example.bookstoreecommerceapi.configs.JwtService;
+import com.example.bookstoreecommerceapi.dto.ChangePasswordRequest;
 import com.example.bookstoreecommerceapi.dto.LoginForm;
 import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
+import com.example.bookstoreecommerceapi.exceptions.IncorrectPasswordException;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
@@ -87,6 +89,14 @@ public class UserController {
     @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<ResponseObject> updateUser(@PathVariable long id, @Valid @RequestBody User user) throws UserNotFoundException {
         ResponseObject responseObject = userService.updateUser(id, user);
+        return ResponseEntity.ok(responseObject);
+    }
+
+    @PutMapping("/{id}/change-password")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
+    public ResponseEntity<ResponseObject> changePassword(@PathVariable long id,@RequestBody ChangePasswordRequest request) throws UserNotFoundException, IncorrectPasswordException {
+        ResponseObject responseObject = userService.changePassword(id,request);
         return ResponseEntity.ok(responseObject);
     }
 

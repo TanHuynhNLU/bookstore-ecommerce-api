@@ -2,6 +2,7 @@ package com.example.bookstoreecommerceapi.services.impl;
 
 import com.example.bookstoreecommerceapi.configs.JwtService;
 import com.example.bookstoreecommerceapi.dto.*;
+import com.example.bookstoreecommerceapi.exceptions.IncorrectPasswordException;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
@@ -161,6 +162,21 @@ public class UserServiceImpl implements UserService {
         userDB.setStatus(user.getStatus());
         User savedUser = userRepository.save(userDB);
         return new ResponseObject(HttpStatus.OK, "Cập nhật tài khoản thành công", savedUser);
+    }
+
+    @Override
+    public ResponseObject changePassword(long id, ChangePasswordRequest request) throws UserNotFoundException, IncorrectPasswordException {
+        Optional<User> optionalUserDB = userRepository.findById(id);
+        if (!optionalUserDB.isPresent()) {
+            throw new UserNotFoundException("Tài khoản không tồn tại");
+        }
+        User userDB = optionalUserDB.get();
+        if (!passwordEncoder.matches(request.getOldPassword(), userDB.getPassword())) {
+            throw new IncorrectPasswordException("Mật khẩu không đúng");
+        }
+        userDB.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        User savedUser = userRepository.save(userDB);
+        return new ResponseObject(HttpStatus.OK, "Thay đổi mật khẩu thành công", savedUser);
     }
 
     @Override

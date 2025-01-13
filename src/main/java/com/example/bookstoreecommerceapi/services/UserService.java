@@ -1,8 +1,10 @@
 package com.example.bookstoreecommerceapi.services;
 
+import com.example.bookstoreecommerceapi.dto.ChangePasswordRequest;
 import com.example.bookstoreecommerceapi.dto.LoginForm;
 import com.example.bookstoreecommerceapi.dto.PaginationResponse;
 import com.example.bookstoreecommerceapi.dto.ResponseObject;
+import com.example.bookstoreecommerceapi.exceptions.IncorrectPasswordException;
 import com.example.bookstoreecommerceapi.exceptions.UserAlreadyExistsException;
 import com.example.bookstoreecommerceapi.exceptions.UserNotFoundException;
 import com.example.bookstoreecommerceapi.models.User;
@@ -21,8 +23,12 @@ public interface UserService {
     ResponseObject isUsernameExists(String username);
 
     ResponseObject login(LoginForm loginForm);
+
     ResponseObject addNewUser(User newUser) throws UserAlreadyExistsException;
+
     ResponseObject updateUser(long id, User user) throws UserNotFoundException;
+
+    ResponseObject changePassword(long id,ChangePasswordRequest request) throws UserNotFoundException, IncorrectPasswordException;
 
     ResponseObject deleteUser(long id) throws UserNotFoundException;
 
