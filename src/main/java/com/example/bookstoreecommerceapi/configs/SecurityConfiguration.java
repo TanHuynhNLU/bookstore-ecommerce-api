@@ -17,10 +17,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
     @Autowired
     private MyUserDetailService myUserDetailService;
@@ -29,15 +32,24 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        RequestMatcher publicEndpoints = new OrRequestMatcher(
+                new AntPathRequestMatcher("/api/auth/register", "POST"),
+                new AntPathRequestMatcher("/api/auth/login", "POST"),
+                new AntPathRequestMatcher("/api/books/**", "GET"),
+                new AntPathRequestMatcher("/api/contacts", "POST"),
+                new AntPathRequestMatcher("/api/orders/filter", "GET"),
+                new AntPathRequestMatcher("/api/users/check-username/**", "GET")
+        );
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests
                         ((authorize) -> authorize
                                 .requestMatchers("/v3/api-docs/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html", "/api/auth/**", "/api/FileUpload/**").permitAll()
-                                .anyRequest().permitAll()
-                        );
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                                .requestMatchers(publicEndpoints).permitAll()
+                                .anyRequest().authenticated()
+                        )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

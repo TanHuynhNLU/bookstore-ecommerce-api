@@ -24,12 +24,14 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
+//    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(@Valid @RequestBody LoginForm loginForm) throws UserAlreadyExistsException {
         ResponseObject responseObject = userService.login(loginForm);
         return ResponseEntity.ok(responseObject);
     }
 
+//    @PreAuthorize("permitAll()")
     @PostMapping("/register")
     public ResponseEntity<ResponseObject> register(@Valid @RequestBody User newUser) throws UserAlreadyExistsException {
         ResponseObject responseObject = userService.addNewUser(newUser);

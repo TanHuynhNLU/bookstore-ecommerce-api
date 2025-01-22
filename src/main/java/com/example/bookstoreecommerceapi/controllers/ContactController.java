@@ -50,8 +50,6 @@ public class ContactController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @Operation(security = {@SecurityRequirement(name = "Bearer key")})
     public ResponseEntity<ResponseObject> addContact(@RequestBody Contact contact) {
         ResponseObject responseObject = contactService.addNewContact(contact);
         return ResponseEntity.ok(responseObject);
